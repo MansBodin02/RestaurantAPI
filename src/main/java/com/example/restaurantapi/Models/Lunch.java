@@ -18,10 +18,11 @@ public class Lunch {
     @Column
     private int lunchDay;
 
+    // ignorera atm
     public Long getId() {
         return id;
     }
-
+    // ignorera atm
     public void setId(Long id) {
         this.id = id;
     }
