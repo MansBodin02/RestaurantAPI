@@ -4,6 +4,8 @@ Skapa en lokal databas
 
 Innan ni startar applikationen, skapa en tom databas med namnet: restaurantdb
 
+användarnamn:root lösen:root
+
 Databasen ska inte innehålla några tabeller, de genereras automatiskt vid första POST-förfrågan.
 
 Första POST-förfrågan (skapar tabellerna)
