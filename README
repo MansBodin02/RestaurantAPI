@@ -1,16 +1,16 @@
-# 🍽️ Restaurant API
+🍽️ Restaurant API
 
-## Skapa en lokal databas
+Skapa en lokal databas
 
-Innan du startar applikationen, skapa en **tom** databas med namnet: restaurantdb
+Innan ni startar applikationen, skapa en tom databas med namnet: restaurantdb
 
-Databasen ska **inte** innehålla några tabeller, de genereras automatiskt vid första **POST**-förfrågan.
+Databasen ska inte innehålla några tabeller, de genereras automatiskt vid första POST-förfrågan.
 
-## Första POST-förfrågan (skapar tabellerna)
+Första POST-förfrågan (skapar tabellerna)
 
-När applikationen körs, gör en **POST**-förfrågan till `/save` med exempeldata:
+När applikationen körs, gör en POST-förfrågan till /save med exempeldata:
 
-```json
+json
 {
     "lunchName": "Pasta Carbonara",
     "lunchWeek": 7,
