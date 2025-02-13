@@ -3,6 +3,7 @@ package com.example.restaurantapi.Models;
 import jakarta.persistence.*;
 
 /**
+ * ingen avancerad modell
  *
  */
 @Entity

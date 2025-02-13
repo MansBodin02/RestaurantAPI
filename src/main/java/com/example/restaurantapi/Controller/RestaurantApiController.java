@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-public class ResturangApiController {
+public class RestaurantApiController {
     @Autowired
     private LunchRepo lunchRepo;
     @GetMapping(value = "/")
@@ -21,11 +21,13 @@ public class ResturangApiController {
         return lunchRepo.findAll();
     }
 
+    //http://localhost:8080/lunches/{week}
     @GetMapping(value = "/lunches/{week}")
     public List<Lunch> getLunchesByWeek(@PathVariable int week) {
         return lunchRepo.findByLunchWeek(week);
     }
 
+    //http://localhost:8080/lunches/{week}/{day}
     @GetMapping(value = "/lunches/{week}/{day}")
     public Lunch getLunchByDay(@PathVariable int week, @PathVariable int day) {
         Optional<Lunch> optionalLunch = lunchRepo.findByLunchWeekAndLunchDay(week, day);
@@ -37,13 +39,14 @@ public class ResturangApiController {
     }
 
 
-
+    //http://localhost:8080/save
     @PostMapping(value = "/save")
     public String saveLunch(@RequestBody Lunch lunch) {
         lunchRepo.save(lunch);
         return "Saved...";
     }
 
+    //http://localhost:8080/update/{week}/{day}
     @PutMapping(value = "/update/{week}/{day}")
     public String updateLunch(@PathVariable int week, @PathVariable int day, @RequestBody Lunch lunch) {
         // Hämta en lunch baserat på vecka och dag
@@ -66,6 +69,7 @@ public class ResturangApiController {
         return "Lunch updated successfully";
     }
 
+    //http://localhost:8080/delete/{week}/{day}
     @DeleteMapping(value = "/delete/{week}/{day}")
     public String deleteLunch(@PathVariable int week, @PathVariable int day) {
         Optional<Lunch> optionalLunch = lunchRepo.findByLunchWeekAndLunchDay(week, day);
