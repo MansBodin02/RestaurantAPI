@@ -11,8 +11,8 @@
 	<groupId>com.resturang.app</groupId>
 	<artifactId>rest</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>resturangAPI</name>
-	<description>Resturang REST API</description>
+	<name>restaurantAPI</name>
+	<description>Restaurant REST API</description>
 	<url/>
 	<licenses>
 		<license/>
