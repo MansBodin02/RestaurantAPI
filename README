@@ -1,1 +1,31 @@
+🍽️ Restaurant API
 
+Skapa en lokal databas
+
+Innan ni startar applikationen, skapa en tom databas med namnet: restaurantdb
+
+användarnamn:root lösen:root
+
+Databasen ska inte innehålla några tabeller, de genereras automatiskt vid första POST-förfrågan.
+
+Första POST-förfrågan (skapar tabellerna)
+
+När applikationen körs, gör en POST-förfrågan till /save med exempeldata:
+
+json
+{
+    "lunchName": "Pasta Carbonara",
+    "lunchWeek": 7,
+    "lunchDay": 1
+}
+
+Vi använde POSTMAN, men curl funkar lika bra.
+
+curl -X POST http://localhost:8080/save -H "Content-Type: application/json" -d '{
+    "lunchName": "Pasta Carbonara",
+    "lunchWeek": 7,
+    "lunchDay": 1
+}'
+
+
+Efter detta kommer databasen automatiskt att innehålla tabellen.
