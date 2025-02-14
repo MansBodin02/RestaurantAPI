@@ -17,6 +17,10 @@ public class Lunch {
     private int lunchWeek;
     @Column
     private int lunchDay;
+    @Column
+    private double price;
+    @Column
+    private String description;
 
     // ignorera atm
     public Long getId() {
@@ -49,5 +53,21 @@ public class Lunch {
 
     public void setLunchDay(int lunchDay) {
         this.lunchDay = lunchDay;
+    }
+
+    public double getPrice() { // Getter för price
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
