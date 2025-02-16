@@ -1,6 +1,6 @@
 package com.example.restaurantapi.Repo;
 
-import com.example.restaurantapi.Models.Lunch;
+import com.example.restaurantapi.Models.Lunch.Lunch;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
