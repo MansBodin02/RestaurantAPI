@@ -19,9 +19,9 @@ public class NewsController {
     @GetMapping("/")
     public List<News> getAllNews() { return newsRepo.findAll(); }
 
-    @GetMapping("/{newsTitle/{newsDate}")
+    @GetMapping("/{newsTitle}/{newsDate}")
     public Optional<News> getNewsByTitleAndDate(@PathVariable String newsTitle, @PathVariable DateTimeException newsDate) {
-        return newsRepo.findNewsByTitleAndDate(newsTitle, newsDate);
+        return newsRepo.findNewsByNewsTitleAndNewsDate(newsTitle, newsDate);
     }
 
     @PostMapping("/")
@@ -44,9 +44,9 @@ public class NewsController {
         }
     }
 
-    @PutMapping("/{newsTitle/{newsDate}")
+    @PutMapping("/{newsTitle}/{newsDate}")
     public String updateNews(@PathVariable String newsTitle, @PathVariable DateTimeException newsDate, @RequestBody News news) {
-        Optional<News> optionalNews = newsRepo.findNewsByTitleAndDate(newsTitle, newsDate);
+        Optional<News> optionalNews = newsRepo.findNewsByNewsTitleAndNewsDate(newsTitle, newsDate);
         if(optionalNews.isEmpty()) {
             return "News not found for title " + newsTitle + ", date " + newsDate;
         }
@@ -59,9 +59,9 @@ public class NewsController {
         return "News updated successfully!";
     }
 
-    @DeleteMapping("/{newsTitle/{newsDate}")
+    @DeleteMapping("/{newsTitle}/{newsDate}")
     public String deleteNews(@PathVariable String newsTitle, @PathVariable DateTimeException newsDate) {
-        Optional<News> optionalNews = newsRepo.findNewsByTitleAndDate(newsTitle, newsDate);
+        Optional<News> optionalNews = newsRepo.findNewsByNewsTitleAndNewsDate(newsTitle, newsDate);
         if (optionalNews.isEmpty()) {
             return "News not found for title " + newsTitle + ", date " + newsDate;
         }

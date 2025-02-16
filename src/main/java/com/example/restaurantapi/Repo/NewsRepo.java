@@ -8,5 +8,5 @@ import java.time.DateTimeException;
 import java.util.Optional;
 
 public interface NewsRepo extends JpaRepository<News, Long> {
-    Optional<News> findNewsByTitleAndDate(String newsTitle, DateTimeException newsDate);
+    Optional<News> findNewsByNewsTitleAndNewsDate(String newsTitle, DateTimeException newsDate);
 }
