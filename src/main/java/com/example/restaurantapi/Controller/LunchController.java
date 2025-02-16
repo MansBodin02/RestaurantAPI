@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/lunches")  // <-- Lägg till en grundläggande path för Lunch API
+@RequestMapping("/api/lunches")
 public class LunchController {
     @Autowired
     private LunchRepo lunchRepo;
