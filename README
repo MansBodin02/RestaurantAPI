@@ -1,31 +1,224 @@
 🍽️ Restaurant API
+Ett REST API för att hantera lunchmenyer, matvaror, kundbeställningar och nyheter i en restaurang.
 
-Skapa en lokal databas
+📌 Installation och konfiguration
+1️⃣ Skapa en lokal databas
+Innan du startar applikationen, skapa en tom MySQL-databas med följande inställningar:
 
-Innan ni startar applikationen, skapa en tom databas med namnet: restaurantdb
+Databasnamn: restaurantdb
+Användarnamn: root
+Lösenord: root
+Du behöver inte skapa några tabeller manuellt – de genereras automatiskt vid den första POST-förfrågan.
 
-användarnamn:root lösen:root
+📌 API-Endpoints
+🥗 Lunch Controller (/api/lunches)
+Hantera lunchmenyer, där varje lunch har namn, vecka och veckodag.
 
-Databasen ska inte innehålla några tabeller, de genereras automatiskt vid första POST-förfrågan.
+Metod	Endpoint	                            Beskrivning
+GET	    /api/lunches/	                        Hämta alla luncher.
+GET	    /api/lunches/{lunchWeek}	            Hämta alla luncher för en viss vecka.
+GET	    /api/lunches/{lunchWeek}/{lunchDay}	    Hämta lunch för en specifik dag i en vecka.
+POST	/api/lunches/	                        Lägg till en lunch.
+POST	/api/lunches/batch	                    Lägg till flera luncher samtidigt.
+PUT	    /api/lunches/{lunchWeek}/{lunchDay}	    Uppdatera en befintlig lunch.
+DELETE	/api/lunches/{lunchWeek}	            Radera alla luncher för en viss vecka.
+DELETE	/api/lunches/{lunchWeek}/{lunchDay}	    Radera en specifik lunch.
 
-Första POST-förfrågan (skapar tabellerna)
 
-När applikationen körs, gör en POST-förfrågan till /save med exempeldata:
-
+Exempel på att skapa en lunch med POST:
+http://localhost:8080/api/lunches/
 json
 {
-    "lunchName": "Pasta Carbonara",
-    "lunchWeek": 7,
-    "lunchDay": 1
+  "lunchName": "Pasta Carbonara",
+  "lunchWeek": 7,
+  "lunchDay": 1
 }
 
-Vi använde POSTMAN, men curl funkar lika bra.
 
-curl -X POST http://localhost:8080/save -H "Content-Type: application/json" -d '{
-    "lunchName": "Pasta Carbonara",
-    "lunchWeek": 7,
-    "lunchDay": 1
-}'
+Exempel på att skapa flear luncher med POST:
+http://localhost:8080/api/lunches/batch
+json
+[
+    {
+        "lunchName": "Vegansk Buddha Bowl",
+        "lunchWeek": 1,
+        "lunchDay": 1,
+        "lunchPrice": 140.0,
+        "lunchDescription": "En blandning av grönsaker, quinoa, hummus och avocado."
+    },
+    {
+        "lunchName": "Margherita Pizza",
+        "lunchWeek": 1,
+        "lunchDay": 2,
+        "lunchPrice": 120.0,
+        "lunchDescription": "Tomatsås, mozzarella och färsk basilika."
+    }
+]
 
 
-Efter detta kommer databasen automatiskt att innehålla tabellen.
+
+🍕 Food Controller (/api/foods)
+Hantera matvaror i restaurangen, såsom deras namn, kategori, beskrivning och pris.
+
+Metod	Endpoint	                        Beskrivning
+GET	    /api/foods/	                        Hämta alla matvaror.
+GET	    /api/foods/Category/{foodCategory}	Hämta mat baserat på kategori.
+GET	    /api/foods/food/{foodName}	        Hämta en specifik matvara.
+POST	/api/foods/	                        Lägg till en ny matvara.
+POST	/api/foods/batch	                Lägg till flera matvaror samtidigt.
+PUT	    /api/foods/food/{foodName}	        Uppdatera en matvara.
+DELETE	/api/foods/food/{foodName}	        Radera en matvara.
+
+Exempel på att skapa en food med POST:
+http://localhost:8080/api/foods/
+json
+{
+    "foodName": "Pasta Carbonara",
+    "foodType": "MEAT",
+    "foodCategory": "MAIN_COURSE",
+    "foodDescription": "Krämig pasta med pancetta, ägg, parmesan och svartpeppar.",
+    "foodPrice": 130
+}
+
+
+Exempel på att skapa flear food med POST:
+http://localhost:8080/api/foods/batch
+json
+[
+  {
+    "foodName": "Vegansk Buddha Bowl",
+    "foodType": "VEGETARIAN",
+    "foodCategory": "MAIN_COURSE",
+    "foodDescription": "En blandning av grönsaker, quinoa, hummus och avocado.",
+    "foodPrice": 140
+  },
+  {
+    "foodName": "Margherita Pizza",
+    "foodType": "VEGETARIAN",
+    "foodCategory": "MAIN_COURSE",
+    "foodDescription": "Tomatsås, mozzarella och färsk basilika.",
+    "foodPrice": 120
+  },
+  {
+    "foodName": "Korv med bröd",
+    "foodType": "MEAT",
+    "foodCategory": "MAIN_COURSE",
+    "foodDescription": "Korv i bröd med senap och ketchup.",
+    "foodPrice": 80
+  }
+]
+
+
+
+🛎️ Order Controller (/api/orders)
+Hantera kundbeställningar. Varje beställning innehåller en lista av matvaror, ett bordsnummer och ett totalt pris.
+
+Metod	Endpoint	                                    Beskrivning
+GET	    /api/orders/	                                Hämta alla ordrar.
+GET	    /api/orders/{orderTable}	                    Hämta en order för ett specifikt bord.
+POST	/api/orders/	                                Skapa en ny order.
+POST	/api/orders/batch	                            Skapa flera ordrar samtidigt.
+PUT	    /api/orders/{orderTable}	                    Uppdatera en order.
+PUT	    /api/orders/{orderTable}/addFood/{foodName}	    Lägg till mat i en befintlig order.
+PUT	    /api/orders/{orderTable}/removeFood/{foodName}	Ta bort mat från en order.
+DELETE	/api/orders/{orderTable}	                    Radera en order.
+
+Exempel på att skapa en order med POST:
+http://localhost:8080/api/orders/
+json
+{
+  "orderTable": 3,
+  "orderDateTime": "2025-02-15T16:32:00",
+  "foodOrders": [
+    {
+      "foodName": "Vegansk Buddha Bowl",
+      "foodType": "VEGETARIAN",
+      "foodCategory": "MAIN_COURSE",
+      "foodDescription": "En blandning av grönsaker, quinoa, hummus och avocado.",
+      "foodPrice": 140
+    },
+    {
+      "foodName": "Fisk Sashimi",
+      "foodType": "FISH",
+      "foodCategory": "STARTER",
+      "foodDescription": "Färsk lax och tonfisk serverat med wasabi och sojasås.",
+      "foodPrice": 150
+    }
+  ],
+  "orderSpecial": null,
+  "orderPrice": 290,
+  "orderState": "ORDERED"
+}
+
+
+
+Exempel på att skapa flera order med POST:
+http://localhost:8080/api/orders/batch
+json
+[
+  {
+    "orderTable": 1,
+    "orderDateTime": "2025-02-15T16:30:00",
+    "foodOrders": [
+      {
+        "foodName": "Margherita Pizza",
+        "foodType": "VEGETARIAN",
+        "foodCategory": "MAIN_COURSE",
+        "foodDescription": "Tomatsås, mozzarella och färsk basilika.",
+        "foodPrice": 120
+      },
+      {
+        "foodName": "Caesar Salad",
+        "foodType": "MEAT",
+        "foodCategory": "STARTER",
+        "foodDescription": "Romansallad, kyckling, krutonger och parmesan med caesardressing.",
+        "foodPrice": 105
+      }
+    ],
+    "orderSpecial": null,
+    "orderPrice": 225,
+    "orderState": "ORDERED"
+  },
+  {
+    "orderTable": 2,
+    "orderDateTime": "2025-02-15T16:31:00",
+    "foodOrders": [
+      {
+        "foodName": "Korv med bröd",
+        "foodType": "MEAT",
+        "foodCategory": "MAIN_COURSE",
+        "foodDescription": "Korv i bröd med senap och ketchup.",
+        "foodPrice": 80
+      },
+      {
+        "foodName": "Spaghetti Bolognese",
+        "foodType": "MEAT",
+        "foodCategory": "MAIN_COURSE",
+        "foodDescription": "Köttfärssås med spaghetti och parmesan.",
+        "foodPrice": 120
+      }
+    ],
+    "orderSpecial": null,
+    "orderPrice": 200,
+    "orderState": "DELIVERED"
+  }
+]
+
+
+
+📰 News Controller (/api/news)
+Hantera restaurangnyheter. Varje nyhet har en titel, beskrivning och publiceringsdatum.
+
+Metod	Endpoint	                        Beskrivning
+GET	    /api/news/	                        Hämta alla nyheter.
+GET	    /api/news/{newsTitle}/{newsDate}	Hämta en nyhet baserat på titel och datum.
+POST	/api/news/	                        Lägg till en nyhet.
+POST	/api/news/batch	                    Lägg till flera nyheter.
+PUT	    /api/news/{newsTitle}/{newsDate}	Uppdatera en nyhet.
+DELETE	/api/news/{newsTitle}/{newsDate}	Radera en nyhet.
+🛠️ Teknologier som används
+Java 17
+Spring Boot
+Spring Data JPA
+MySQL
+Postman/Curl (för API-testning)
