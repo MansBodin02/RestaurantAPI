@@ -4,7 +4,6 @@ import com.example.restaurantapi.Models.Food.Food;
 import com.example.restaurantapi.Models.Order.CustomerOrder;
 import com.example.restaurantapi.Repo.FoodRepo;
 import com.example.restaurantapi.Repo.OrderRepo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -14,11 +13,14 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/orders")
 public class OrderController {
 
-    @Autowired
-    private OrderRepo orderRepo;
+    private final OrderRepo orderRepo;
 
-    @Autowired
-    private FoodRepo foodRepo;
+    private final FoodRepo foodRepo;
+
+    public OrderController(OrderRepo orderRepo, FoodRepo foodRepo) {
+        this.orderRepo = orderRepo;
+        this.foodRepo = foodRepo;
+    }
 
     @GetMapping("/")
     public List<CustomerOrder> getAllOrders() {

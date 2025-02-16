@@ -3,7 +3,6 @@ package com.example.restaurantapi.Controller;
 import com.example.restaurantapi.Models.Food.Food;
 import com.example.restaurantapi.Models.Food.FoodCategory;
 import com.example.restaurantapi.Repo.FoodRepo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,8 +12,11 @@ import java.util.List;
 @RequestMapping("/api/foods")
 public class FoodController {
 
-    @Autowired
-    private FoodRepo foodRepo;
+    private final FoodRepo foodRepo;
+
+    public FoodController(FoodRepo foodRepo) {
+        this.foodRepo = foodRepo;
+    }
 
     @GetMapping("/")
     public List<Food> getAllFoods() {

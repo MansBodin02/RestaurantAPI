@@ -2,7 +2,6 @@ package com.example.restaurantapi.Controller;
 
 import com.example.restaurantapi.Models.News.News;
 import com.example.restaurantapi.Repo.NewsRepo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,8 +12,11 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/news")
 public class NewsController {
-    @Autowired
-    private NewsRepo newsRepo;
+    private final NewsRepo newsRepo;
+
+    public NewsController(NewsRepo newsRepo) {
+        this.newsRepo = newsRepo;
+    }
 
     @GetMapping("/")
     public List<News> getAllNews() { return newsRepo.findAll(); }
