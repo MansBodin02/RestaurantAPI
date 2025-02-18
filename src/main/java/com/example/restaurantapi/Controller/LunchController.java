@@ -37,9 +37,9 @@ public class LunchController {
     public String saveLunch(@RequestBody Lunch lunch) {
         try {
             lunchRepo.save(lunch);
-            return "Lunch saved!";
+            return "Lunches saved!";
         } catch (DataIntegrityViolationException e) {
-            return "Error: A lunch already exists for week " + lunch.getLunchWeek() + " and day " + lunch.getLunchDay();
+            return "Error: Duplicate lunch for the same week and day.";
         }
     }
 
