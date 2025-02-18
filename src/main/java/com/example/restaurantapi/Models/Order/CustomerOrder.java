@@ -4,6 +4,7 @@ import com.example.restaurantapi.Models.Food.Food;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,14 +19,17 @@ public class CustomerOrder {
     @Column(nullable = false)
     private LocalDateTime orderDateTime;
 
-    // @ManyToMany relation to Food
-    @OneToMany
+    // ManyToMany relation to Food
+    @ManyToMany
     @JoinTable(
             name = "order_food",
             joinColumns = @JoinColumn(name = "order_id"),
             inverseJoinColumns = @JoinColumn(name = "food_id")
     )
     private List<Food> foodOrders;
+
+    @OneToMany(mappedBy = "customerOrder", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItem> orderItems = new ArrayList<>();
 
     @Column
     private String orderSpecial;
@@ -37,7 +41,6 @@ public class CustomerOrder {
     @Column(nullable = false)
     private OrderState orderState;
 
-
     // Getters and Setters
     public int getOrderTable() { return orderTable; }
     public void setOrderTable(int orderTable) { this.orderTable = orderTable; }
@@ -45,6 +48,8 @@ public class CustomerOrder {
     public void setOrderDateTime(LocalDateTime orderDateTime) { this.orderDateTime = orderDateTime; }
     public List<Food> getFoodOrders() { return foodOrders; }
     public void setFoodOrders(List<Food> foodOrders) { this.foodOrders = foodOrders; }
+    public List<OrderItem> getOrderItems() { return orderItems; }
+    public void setOrderItems(List<OrderItem> orderItems) { this.orderItems = orderItems; }
     public String getOrderSpecial() { return orderSpecial; }
     public void setOrderSpecial(String orderSpecial) { this.orderSpecial = orderSpecial; }
     public double getOrderPrice() { return orderPrice; }
@@ -52,5 +57,3 @@ public class CustomerOrder {
     public OrderState getOrderState() { return orderState; }
     public void setOrderState(OrderState orderState) { this.orderState = orderState; }
 }
-
-
