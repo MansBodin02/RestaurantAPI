@@ -2,6 +2,7 @@ package com.example.restaurantapi.Controller;
 
 import com.example.restaurantapi.Models.Food.Food;
 import com.example.restaurantapi.Models.Order.CustomerOrder;
+import com.example.restaurantapi.Models.Order.OrderItem;
 import com.example.restaurantapi.Repo.FoodRepo;
 import com.example.restaurantapi.Repo.OrderRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,16 +34,21 @@ public class OrderController {
     @PostMapping("/")
     public String saveCustomerOrder(@RequestBody CustomerOrder customerOrder) {
         try {
-            // Konvertera foodNames till riktiga Food-objekt
-            List<Food> foodList = customerOrder.getFoodOrders().stream()
-                    .map(food -> foodRepo.findFoodByFoodName(food.getFoodName())
-                            .orElseThrow(() -> new IllegalArgumentException("Food not found: " + food.getFoodName())))
-                    .collect(Collectors.toList());
+            List<OrderItem> orderItems = new ArrayList<>();
 
-            customerOrder.setFoodOrders(foodList);
+            for (OrderItem item : customerOrder.getOrderItems()) {
+                Food food = foodRepo.findFoodByFoodName(item.getFood().getFoodName())
+                        .orElseThrow(() -> new IllegalArgumentException("Food not found: " + item.getFood().getFoodName()));
 
-            // Beräkna totalpris för ordern
-            double totalPrice = foodList.stream().mapToDouble(Food::getFoodPrice).sum();
+                orderItems.add(new OrderItem(customerOrder, food, item.getFoodQuantity()));
+            }
+
+            customerOrder.setOrderItems(orderItems);
+
+            // Beräkna totalpris
+            double totalPrice = orderItems.stream()
+                    .mapToDouble(item -> item.getFood().getFoodPrice() * item.getFoodQuantity())
+                    .sum();
             customerOrder.setOrderPrice(totalPrice);
 
             orderRepo.save(customerOrder);
@@ -52,6 +58,8 @@ public class OrderController {
             return "Error saving order: " + e.getMessage();
         }
     }
+
+
 
     @PostMapping("/batch")
     public String saveCustomerOrders(@RequestBody List<CustomerOrder> customerOrders) {

@@ -1,6 +1,8 @@
 package com.example.restaurantapi.Models.Food;
 
+import com.example.restaurantapi.Models.Order.CustomerOrder;
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(
@@ -28,6 +30,10 @@ public class Food {
     @Column(nullable = false)
     private double foodPrice;
 
+    // ManyToMany relation to CustomerOrder
+    @ManyToMany(mappedBy = "foodOrders")
+    private List<CustomerOrder> customerOrders;
+
     // Getters and Setters
     public String getFoodName() { return foodName; }
     public void setFoodName(String foodName) { this.foodName = foodName; }
@@ -39,4 +45,6 @@ public class Food {
     public void setFoodDescription(String foodDescription) { this.foodDescription = foodDescription; }
     public double getFoodPrice() { return foodPrice; }
     public void setFoodPrice(double foodPrice) { this.foodPrice = foodPrice; }
+    public List<CustomerOrder> getCustomerOrders() { return customerOrders; }
+    public void setCustomerOrders(List<CustomerOrder> customerOrders) { this.customerOrders = customerOrders; }
 }
