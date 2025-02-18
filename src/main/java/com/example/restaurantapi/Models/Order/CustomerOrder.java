@@ -1,6 +1,7 @@
 package com.example.restaurantapi.Models.Order;
 
 import com.example.restaurantapi.Models.Food.Food;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -29,7 +30,8 @@ public class CustomerOrder {
     private List<Food> foodOrders;
 
     @OneToMany(mappedBy = "customerOrder", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> orderItems = new ArrayList<>();
+    @JsonManagedReference
+    private List<OrderItem> orderItems;
 
     @Column(nullable = false)
     private double orderPrice;
