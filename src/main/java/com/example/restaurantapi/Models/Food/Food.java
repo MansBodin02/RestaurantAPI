@@ -9,6 +9,14 @@ import java.util.List;
         uniqueConstraints = @UniqueConstraint(columnNames = {"food_name"})
 )
 public class Food {
+    public Long getFoodId() {
+        return foodId;
+    }
+
+    public void setFoodId(Long foodId) {
+        this.foodId = foodId;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long foodId;

@@ -13,4 +13,8 @@ public interface FoodRepo extends JpaRepository<Food, Long> {
     List<Food> findFoodByFoodCategory(FoodCategory foodCategory);
     Optional<Food> findFoodByFoodName(String foodName);
     List<Food> findByFoodNameIn(Set<String> foodNames);
+
+    List<Food> findByIdIn(Set<Long> foodIds);
+
+    Optional<Food> findFoodById(Long foodId);
 }

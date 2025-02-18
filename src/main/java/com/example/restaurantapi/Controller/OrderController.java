@@ -62,31 +62,30 @@ public class OrderController {
     }
 
 
-
     @PostMapping("/batch")
     public String saveCustomerOrders(@RequestBody List<CustomerOrder> customerOrders) {
         List<String> errors = new ArrayList<>();
 
-        // Samla alla foodNames från alla ordrar
-        Set<String> foodNames = customerOrders.stream()
+        // Samla alla foodIds från alla ordrar
+        Set<Long> foodIds = customerOrders.stream()
                 .flatMap(order -> order.getFoodOrders().stream())
-                .map(Food::getFoodName)
+                .map(Food::getFoodId)
                 .collect(Collectors.toSet());
 
-        // Hämta alla Food-objekt i en batch baserat på de foodNames som behövs
-        List<Food> foods = foodRepo.findByFoodNameIn(foodNames);
+        // Hämta alla Food-objekt i en batch baserat på foodIds
+        List<Food> foods = foodRepo.findByIdIn(foodIds);
 
-        // Skapa en map för snabb åtkomst av Food-objekt baserat på foodName
-        Map<String, Food> foodMap = foods.stream()
-                .collect(Collectors.toMap(Food::getFoodName, food -> food));
+        // Skapa en map för snabb åtkomst av Food-objekt baserat på foodId
+        Map<Long, Food> foodMap = foods.stream()
+                .collect(Collectors.toMap(Food::getFoodId, food -> food));
 
         // Bearbeta varje order
         for (CustomerOrder customerOrder : customerOrders) {
             try {
-                // Konvertera foodNames till riktiga Food-objekt
+                // Konvertera foodIds till riktiga Food-objekt
                 List<Food> foodList = customerOrder.getFoodOrders().stream()
-                        .map(food -> Optional.ofNullable(foodMap.get(food.getFoodName()))
-                                .orElseThrow(() -> new IllegalArgumentException("Food not found: " + food.getFoodName())))
+                        .map(food -> Optional.ofNullable(foodMap.get(food.getFoodId()))
+                                .orElseThrow(() -> new IllegalArgumentException("Food not found: " + food.getFoodId())))
                         .collect(Collectors.toList());
 
                 customerOrder.setFoodOrders(foodList);
@@ -108,6 +107,7 @@ public class OrderController {
         }
     }
 
+
     @PutMapping("/{orderTable}")
     public String updateOrder(@PathVariable int orderTable, @RequestBody CustomerOrder customerOrder) {
         CustomerOrder existingCustomerOrder = orderRepo.findOrderByOrderTable(orderTable);
@@ -117,8 +117,8 @@ public class OrderController {
 
         try {
             List<Food> foodList = customerOrder.getFoodOrders().stream()
-                    .map(food -> foodRepo.findFoodByFoodName(food.getFoodName())
-                            .orElseThrow(() -> new IllegalArgumentException("Food not found: " + food.getFoodName())))
+                    .map(food -> foodRepo.findFoodById(food.getFoodId())
+                            .orElseThrow(() -> new IllegalArgumentException("Food not found: " + food.getFoodId())))
                     .collect(Collectors.toList());
 
             existingCustomerOrder.setFoodOrders(foodList);
@@ -134,6 +134,7 @@ public class OrderController {
             return "Error updating order: " + e.getMessage();
         }
     }
+
 
     @PutMapping("/{orderTable}/addFood/{foodName}")
     public String addFoodToOrder(@PathVariable int orderTable, @PathVariable String foodName) {
@@ -162,6 +163,7 @@ public class OrderController {
         return "Food " + foodName + " added to order and order price updated to " + newOrderPrice;
     }
 
+
     @PutMapping("/{orderTable}/removeFood/{foodName}")
     public String removeFoodFromOrder(@PathVariable int orderTable, @PathVariable String foodName) {
         CustomerOrder existingCustomerOrder = orderRepo.findOrderByOrderTable(orderTable);
@@ -188,6 +190,7 @@ public class OrderController {
         return "Food " + foodName + " removed from order and order price updated to " + newOrderPrice;
     }
 
+
     @DeleteMapping("/{orderTable}")
     public String deleteOrder(@PathVariable int orderTable) {
         CustomerOrder existingCustomerOrder = orderRepo.findOrderByOrderTable(orderTable);
@@ -198,4 +201,5 @@ public class OrderController {
         orderRepo.delete(existingCustomerOrder);
         return "Order deleted successfully!";
     }
+
 }
