@@ -31,9 +31,6 @@ public class CustomerOrder {
     @OneToMany(mappedBy = "customerOrder", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    @Column
-    private String orderSpecial;
-
     @Column(nullable = false)
     private double orderPrice;
 
@@ -50,8 +47,6 @@ public class CustomerOrder {
     public void setFoodOrders(List<Food> foodOrders) { this.foodOrders = foodOrders; }
     public List<OrderItem> getOrderItems() { return orderItems; }
     public void setOrderItems(List<OrderItem> orderItems) { this.orderItems = orderItems; }
-    public String getOrderSpecial() { return orderSpecial; }
-    public void setOrderSpecial(String orderSpecial) { this.orderSpecial = orderSpecial; }
     public double getOrderPrice() { return orderPrice; }
     public void setOrderPrice(double orderPrice) { this.orderPrice = orderPrice; }
     public OrderState getOrderState() { return orderState; }

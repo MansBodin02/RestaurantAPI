@@ -19,13 +19,16 @@ public class OrderItem {
 
     @Column
     private int foodQuantity;
+    @Column
+    private String orderItemSpecial;
 
     public OrderItem() {}
 
-    public OrderItem(CustomerOrder customerOrder, Food food, int foodQuantity) {
+    public OrderItem(CustomerOrder customerOrder, Food food, int foodQuantity, String orderItemSpecial) {
         this.customerOrder = customerOrder;
         this.food = food;
         this.foodQuantity = foodQuantity;
+        this.orderItemSpecial = orderItemSpecial;
     }
 
     public CustomerOrder getCustomerOrder() {
@@ -50,5 +53,13 @@ public class OrderItem {
 
     public void setFoodQuantity(int foodQuantity) {
         this.foodQuantity = foodQuantity;
+    }
+
+    public String getOrderItemSpecial() {
+        return orderItemSpecial;
+    }
+
+    public void setOrderItemSpecial(String orderItemSpecial) {
+        this.orderItemSpecial = orderItemSpecial;
     }
 }

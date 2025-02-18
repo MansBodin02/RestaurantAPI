@@ -42,7 +42,8 @@ public class OrderController {
                 Food food = foodRepo.findFoodByFoodName(item.getFood().getFoodName())
                         .orElseThrow(() -> new IllegalArgumentException("Food not found: " + item.getFood().getFoodName()));
 
-                orderItems.add(new OrderItem(customerOrder, food, item.getFoodQuantity()));
+                // Här skapar vi OrderItem med specialinstruktioner
+                orderItems.add(new OrderItem(customerOrder, food, item.getFoodQuantity(), item.getOrderItemSpecial()));
             }
 
             customerOrder.setOrderItems(orderItems);
@@ -62,41 +63,38 @@ public class OrderController {
     }
 
 
+
+
     @PostMapping("/batch")
     public String saveCustomerOrders(@RequestBody List<CustomerOrder> customerOrders) {
         List<String> errors = new ArrayList<>();
 
-        // Samla alla foodIds från alla ordrar
-        Set<Long> foodIds = customerOrders.stream()
-                .flatMap(order -> order.getFoodOrders().stream())
-                .map(Food::getFoodId)
-                .collect(Collectors.toSet());
-
-        // Hämta alla Food-objekt i en batch baserat på foodIds
-        List<Food> foods = foodRepo.findByIdIn(foodIds);
-
-        // Skapa en map för snabb åtkomst av Food-objekt baserat på foodId
-        Map<Long, Food> foodMap = foods.stream()
-                .collect(Collectors.toMap(Food::getFoodId, food -> food));
-
         // Bearbeta varje order
         for (CustomerOrder customerOrder : customerOrders) {
             try {
-                // Konvertera foodIds till riktiga Food-objekt
-                List<Food> foodList = customerOrder.getFoodOrders().stream()
-                        .map(food -> Optional.ofNullable(foodMap.get(food.getFoodId()))
-                                .orElseThrow(() -> new IllegalArgumentException("Food not found: " + food.getFoodId())))
+                // Hämta foodItems baserat på foodName istället för foodId
+                List<OrderItem> orderItems = customerOrder.getOrderItems().stream()
+                        .map(orderItem -> {
+                            // Hitta maten baserat på foodName istället för foodId
+                            Food food = foodRepo.findFoodByFoodName(orderItem.getFood().getFoodName())
+                                    .orElseThrow(() -> new IllegalArgumentException("Food not found: " + orderItem.getFood().getFoodName()));
+
+                            // Skapa nytt OrderItem med specialinstruktioner
+                            return new OrderItem(customerOrder, food, orderItem.getFoodQuantity(), orderItem.getOrderItemSpecial());
+                        })
                         .collect(Collectors.toList());
 
-                customerOrder.setFoodOrders(foodList);
+                customerOrder.setOrderItems(orderItems);
 
                 // Beräkna totalpris för ordern
-                double totalPrice = foodList.stream().mapToDouble(Food::getFoodPrice).sum();
+                double totalPrice = orderItems.stream()
+                        .mapToDouble(item -> item.getFood().getFoodPrice() * item.getFoodQuantity())
+                        .sum();
                 customerOrder.setOrderPrice(totalPrice);
 
                 orderRepo.save(customerOrder);
             } catch (Exception e) {
-                errors.add("Error with order " + customerOrder.getFoodOrders() + ": " + e.getMessage());
+                errors.add("Error with order " + customerOrder.getOrderItems() + ": " + e.getMessage());
             }
         }
 
@@ -108,6 +106,8 @@ public class OrderController {
     }
 
 
+
+
     @PutMapping("/{orderTable}")
     public String updateOrder(@PathVariable int orderTable, @RequestBody CustomerOrder customerOrder) {
         CustomerOrder existingCustomerOrder = orderRepo.findOrderByOrderTable(orderTable);
@@ -116,15 +116,18 @@ public class OrderController {
         }
 
         try {
-            List<Food> foodList = customerOrder.getFoodOrders().stream()
-                    .map(food -> foodRepo.findFoodById(food.getFoodId())
-                            .orElseThrow(() -> new IllegalArgumentException("Food not found: " + food.getFoodId())))
+            // Bearbeta varje OrderItem för att uppdatera maten och specialinstruktioner
+            List<OrderItem> orderItems = customerOrder.getOrderItems().stream()
+                    .map(orderItem -> {
+                        Food food = foodRepo.findFoodByFoodId(orderItem.getFood().getFoodId())
+                                .orElseThrow(() -> new IllegalArgumentException("Food not found: " + orderItem.getFood().getFoodId()));
+                        return new OrderItem(existingCustomerOrder, food, orderItem.getFoodQuantity(), orderItem.getOrderItemSpecial());
+                    })
                     .collect(Collectors.toList());
 
-            existingCustomerOrder.setFoodOrders(foodList);
+            existingCustomerOrder.setOrderItems(orderItems);
             existingCustomerOrder.setOrderTable(customerOrder.getOrderTable());
             existingCustomerOrder.setOrderDateTime(customerOrder.getOrderDateTime());
-            existingCustomerOrder.setOrderSpecial(customerOrder.getOrderSpecial());
             existingCustomerOrder.setOrderPrice(customerOrder.getOrderPrice());
             existingCustomerOrder.setOrderState(customerOrder.getOrderState());
 
@@ -136,8 +139,9 @@ public class OrderController {
     }
 
 
+
     @PutMapping("/{orderTable}/addFood/{foodName}")
-    public String addFoodToOrder(@PathVariable int orderTable, @PathVariable String foodName) {
+    public String addFoodToOrder(@PathVariable int orderTable, @PathVariable String foodName, @RequestParam String orderItemSpecial) {
         CustomerOrder existingCustomerOrder = orderRepo.findOrderByOrderTable(orderTable);
         if (existingCustomerOrder == null) {
             return "Order not found at order table: " + orderTable;
@@ -147,14 +151,19 @@ public class OrderController {
                 .orElseThrow(() -> new IllegalArgumentException("Food not found: " + foodName));
 
         // Kontrollera om maten redan finns i ordern
-        if (existingCustomerOrder.getFoodOrders().contains(foodToAdd)) {
+        boolean foodExists = existingCustomerOrder.getOrderItems().stream()
+                .anyMatch(orderItem -> orderItem.getFood().equals(foodToAdd));
+
+        if (foodExists) {
             return "Food " + foodName + " is already in this order.";
         }
 
-        existingCustomerOrder.getFoodOrders().add(foodToAdd);
+        // Lägg till OrderItem med specialinstruktioner
+        OrderItem orderItem = new OrderItem(existingCustomerOrder, foodToAdd, 1, orderItemSpecial);  // 1 är en default mängd
+        existingCustomerOrder.getOrderItems().add(orderItem);
 
-        double newOrderPrice = existingCustomerOrder.getFoodOrders().stream()
-                .mapToDouble(Food::getFoodPrice)
+        double newOrderPrice = existingCustomerOrder.getOrderItems().stream()
+                .mapToDouble(item -> item.getFood().getFoodPrice() * item.getFoodQuantity())
                 .sum();
 
         existingCustomerOrder.setOrderPrice(newOrderPrice);
@@ -174,14 +183,19 @@ public class OrderController {
         Food foodToRemove = foodRepo.findFoodByFoodName(foodName)
                 .orElseThrow(() -> new IllegalArgumentException("Food not found: " + foodName));
 
-        if (!existingCustomerOrder.getFoodOrders().contains(foodToRemove)) {
+        OrderItem orderItemToRemove = existingCustomerOrder.getOrderItems().stream()
+                .filter(orderItem -> orderItem.getFood().equals(foodToRemove))
+                .findFirst()
+                .orElse(null);
+
+        if (orderItemToRemove == null) {
             return "Food " + foodName + " is not in this order.";
         }
 
-        existingCustomerOrder.getFoodOrders().remove(foodToRemove);
+        existingCustomerOrder.getOrderItems().remove(orderItemToRemove);
 
-        double newOrderPrice = existingCustomerOrder.getFoodOrders().stream()
-                .mapToDouble(Food::getFoodPrice)
+        double newOrderPrice = existingCustomerOrder.getOrderItems().stream()
+                .mapToDouble(item -> item.getFood().getFoodPrice() * item.getFoodQuantity())
                 .sum();
 
         existingCustomerOrder.setOrderPrice(newOrderPrice);
@@ -189,6 +203,7 @@ public class OrderController {
         orderRepo.save(existingCustomerOrder);
         return "Food " + foodName + " removed from order and order price updated to " + newOrderPrice;
     }
+
 
 
     @DeleteMapping("/{orderTable}")
