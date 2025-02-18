@@ -1,5 +1,6 @@
 package com.example.restaurantapi.Models.Order;
 
+import com.example.restaurantapi.Models.Drink.Drink;
 import com.example.restaurantapi.Models.Food.Food;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -26,8 +27,20 @@ public class CustomerOrder {
             name = "order_food",
             joinColumns = @JoinColumn(name = "order_id"),
             inverseJoinColumns = @JoinColumn(name = "food_id")
+
     )
     private List<Food> foodOrders;
+
+    @ManyToMany
+    @JoinTable(
+            name = "order_drink",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "drink_id")
+
+    )
+    private List<Drink> drinkOrders;
+
+
 
     @OneToMany(mappedBy = "customerOrder", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
@@ -53,4 +66,8 @@ public class CustomerOrder {
     public void setOrderPrice(double orderPrice) { this.orderPrice = orderPrice; }
     public OrderState getOrderState() { return orderState; }
     public void setOrderState(OrderState orderState) { this.orderState = orderState; }
+
+    public List<Drink> getDrinkOrders() {return drinkOrders;}
+
+    public void setDrinkOrders(List<Drink> drinkOrders) {this.drinkOrders = drinkOrders;}
 }
