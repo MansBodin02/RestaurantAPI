@@ -31,7 +31,9 @@ json
 {
   "lunchName": "Pasta Carbonara",
   "lunchWeek": 7,
-  "lunchDay": 1
+  "lunchDay": 1,
+  "lunchPrice": 140.0,
+  "lunchDescription": Vad som helst
 }
 
 
