@@ -112,6 +112,65 @@ json
 
 
 
+Exempel på att skapa Drink med POST:
+http://localhost:8080/api/drinks/
+json
+    {
+        "drinkName": "Sprite",
+        "drinkCategory": "NONALCOHOLIC",
+        "drinkDescription": "Kolsyrad läskedryck med limesmak.",
+        "drinkPrice": 30.0
+    }
+
+Exempel på att skapa flera drinks med POST:
+http://localhost:8080/api/drinks/batch
+json
+[
+    {
+        "drinkName": "Coca-Cola",
+        "drinkCategory": "NONALCOHOLIC",
+        "drinkDescription": "Kolsyrad läskedryck med colasmak.",
+        "drinkPrice": 30.0
+    },
+    {
+        "drinkName": "Fanta",
+        "drinkCategory": "NONALCOHOLIC",
+        "drinkDescription": "Apelsinsmakande kolsyrad läskedryck.",
+        "drinkPrice": 30.0
+    },
+    {
+        "drinkName": "Sprite",
+        "drinkCategory": "NONALCOHOLIC",
+        "drinkDescription": "Citron- och limesmakande kolsyrad dryck.",
+        "drinkPrice": 30.0
+    },
+    {
+        "drinkName": "Heineken",
+        "drinkCategory": "ALCOHOL",
+        "drinkDescription": "Holländsk ljus lager med frisk smak.",
+        "drinkPrice": 55.0
+    },
+    {
+        "drinkName": "Corona Extra",
+        "drinkCategory": "ALCOHOL",
+        "drinkDescription": "Mexikansk ljus lager, perfekt med en limeklyfta.",
+        "drinkPrice": 60.0
+    },
+    {
+        "drinkName": "Carlsberg",
+        "drinkCategory": "ALCOHOL",
+        "drinkDescription": "Klassisk dansk lager med en balanserad smak.",
+        "drinkPrice": 50.0
+    },
+    {
+        "drinkName": "Chardonnay",
+        "drinkCategory": "ALCOHOL",
+        "drinkDescription": "Fruktigt vitt vin med inslag av citrus och vanilj.",
+        "drinkPrice": 120.0
+    }
+]
+
+
 🛎️ Order Controller (/api/orders)
 Hantera kundbeställningar. Varje beställning innehåller en lista av matvaror, ett bordsnummer och ett totalt pris.
 
