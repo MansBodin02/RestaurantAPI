@@ -20,7 +20,7 @@ public class News {
     @Column(nullable = false)
     private String newsTitle;
 
-    @Column(nullable = false)
+    @Column
     private String newsInfo;
 
     @Column(nullable = false)
