@@ -185,87 +185,64 @@ PUT	    /api/orders/{orderTable}/removeFood/{foodName}	Ta bort mat från en orde
 DELETE	/api/orders/{orderTable}	                    Radera en order.
 
 Exempel på att skapa en order med POST:
-http://localhost:8080/api/orders/
+✅ Endast mat
+Request (POST /api/orders/)
 json
+
 {
-  "orderTable": 3,
-  "orderDateTime": "2025-02-15T16:32:00",
-  "foodOrders": [
-    {
-      "foodName": "Vegansk Buddha Bowl",
-      "foodType": "VEGETARIAN",
-      "foodCategory": "MAIN_COURSE",
-      "foodDescription": "En blandning av grönsaker, quinoa, hummus och avocado.",
-      "foodPrice": 140
-    },
-    {
-      "foodName": "Fisk Sashimi",
-      "foodType": "FISH",
-      "foodCategory": "STARTER",
-      "foodDescription": "Färsk lax och tonfisk serverat med wasabi och sojasås.",
-      "foodPrice": 150
-    }
-  ],
-  "orderSpecial": null,
-  "orderPrice": 290,
-  "orderState": "ORDERED"
-}
-
-
-
-Exempel på att skapa flera order med POST:
-http://localhost:8080/api/orders/batch
-json
-[
-  {
-    "orderTable": 1,
-    "orderDateTime": "2025-02-15T16:30:00",
-    "foodOrders": [
-      {
-        "foodName": "Margherita Pizza",
-        "foodType": "VEGETARIAN",
-        "foodCategory": "MAIN_COURSE",
-        "foodDescription": "Tomatsås, mozzarella och färsk basilika.",
-        "foodPrice": 120
-      },
-      {
-        "foodName": "Caesar Salad",
-        "foodType": "MEAT",
-        "foodCategory": "STARTER",
-        "foodDescription": "Romansallad, kyckling, krutonger och parmesan med caesardressing.",
-        "foodPrice": 105
-      }
+    "orderTable": 5,
+    "orderDateTime": "2025-02-15T16:33:00",
+    "orderItems": [
+        {
+            "food": {
+                "foodName": "Pasta Carbonara"
+            },
+            "foodQuantity": 2,
+            "orderItemSpecial": "Lite mindre grädde"
+        }
     ],
-    "orderSpecial": null,
-    "orderPrice": 225,
     "orderState": "ORDERED"
-  },
-  {
-    "orderTable": 2,
-    "orderDateTime": "2025-02-15T16:31:00",
-    "foodOrders": [
-      {
-        "foodName": "Korv med bröd",
-        "foodType": "MEAT",
-        "foodCategory": "MAIN_COURSE",
-        "foodDescription": "Korv i bröd med senap och ketchup.",
-        "foodPrice": 80
-      },
-      {
-        "foodName": "Spaghetti Bolognese",
-        "foodType": "MEAT",
-        "foodCategory": "MAIN_COURSE",
-        "foodDescription": "Köttfärssås med spaghetti och parmesan.",
-        "foodPrice": 120
-      }
+}
+✅ Endast dryck
+Request (POST /api/orders/)
+json
+
+{
+    "orderTable": 6,
+    "orderDateTime": "2025-02-15T17:00:00",
+    "orderItems": [
+        {
+            "drink": {
+                "drinkName": "Heineken"
+            },
+            "drinkQuantity": 3,
+            "orderItemSpecial": "Extra kall"
+        }
     ],
-    "orderSpecial": null,
-    "orderPrice": 200,
-    "orderState": "DELIVERED"
-  }
-]
+    "orderState": "ORDERED"
+}
+✅ Både mat och dryck
+Request (POST /api/orders/)
+json
 
-
+{
+    "orderTable": 7,
+    "orderDateTime": "2025-02-15T18:00:00",
+    "orderItems": [
+        {
+            "food": {
+                "foodName": "Pasta Carbonara"
+            },
+            "drink": {
+                "drinkName": "Heineken"
+            },
+            "foodQuantity": 1,
+            "drinkQuantity": 1,
+            "orderItemSpecial": "Lite mindre grädde"
+        }
+    ],
+    "orderState": "ORDERED"
+}
 
 📰 News Controller (/api/news)
 Hantera restaurangnyheter. Varje nyhet har en titel, beskrivning och publiceringsdatum.
