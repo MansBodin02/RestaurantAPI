@@ -2,7 +2,7 @@ package com.example.restaurantapi.Models.News;
 
 
 import jakarta.persistence.*;
-import java.time.DateTimeException;
+import java.time.LocalDateTime;
 
 /**
  * Ingen avancerad modell för Lunch
@@ -19,11 +19,14 @@ public class News {
     @Column(nullable = false)
     private String newsTitle;
 
-    @Column(nullable = false)
+    @Column
     private String newsInfo;
 
     @Column(nullable = false)
-    private DateTimeException newsDate;
+    private LocalDateTime newsDate;
+
+    @Column
+    private String newsURLImage;
 
     public String getNewsTitle() {
         return newsTitle;
@@ -41,11 +44,15 @@ public class News {
         this.newsInfo = newsInfo;
     }
 
-    public DateTimeException getNewsDate() {
+    public LocalDateTime getNewsDate() {
         return newsDate;
     }
 
-    public void setNewsDate(DateTimeException newsDate) {
+    public void setNewsDate(LocalDateTime newsDate) {
         this.newsDate = newsDate;
     }
+
+    public String getNewsURLImage() {return newsURLImage;}
+
+    public void setNewsURLImage(String newsURLImage) {this.newsURLImage = newsURLImage;}
 }

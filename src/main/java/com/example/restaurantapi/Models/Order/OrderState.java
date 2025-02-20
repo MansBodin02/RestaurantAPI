@@ -1,5 +1,5 @@
 package com.example.restaurantapi.Models.Order;
 
 public enum OrderState {
-    ORDERED, DELIVERED, FINISHED
+    ORDERED, DELIVERED, FINISHED, PAID
 }

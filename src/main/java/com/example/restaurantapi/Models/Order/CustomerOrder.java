@@ -1,6 +1,8 @@
 package com.example.restaurantapi.Models.Order;
 
+import com.example.restaurantapi.Models.Drink.Drink;
 import com.example.restaurantapi.Models.Food.Food;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -18,17 +20,30 @@ public class CustomerOrder {
     @Column(nullable = false)
     private LocalDateTime orderDateTime;
 
-    // @ManyToMany relation to Food
-    @OneToMany
+    // ManyToMany relation to Food
+    @ManyToMany
     @JoinTable(
             name = "order_food",
             joinColumns = @JoinColumn(name = "order_id"),
             inverseJoinColumns = @JoinColumn(name = "food_id")
+
     )
     private List<Food> foodOrders;
 
-    @Column
-    private String orderSpecial;
+    @ManyToMany
+    @JoinTable(
+            name = "order_drink",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "drink_id")
+
+    )
+    private List<Drink> drinkOrders;
+
+
+
+    @OneToMany(mappedBy = "customerOrder", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<OrderItem> orderItems;
 
     @Column(nullable = false)
     private double orderPrice;
@@ -37,7 +52,6 @@ public class CustomerOrder {
     @Column(nullable = false)
     private OrderState orderState;
 
-
     // Getters and Setters
     public int getOrderTable() { return orderTable; }
     public void setOrderTable(int orderTable) { this.orderTable = orderTable; }
@@ -45,12 +59,14 @@ public class CustomerOrder {
     public void setOrderDateTime(LocalDateTime orderDateTime) { this.orderDateTime = orderDateTime; }
     public List<Food> getFoodOrders() { return foodOrders; }
     public void setFoodOrders(List<Food> foodOrders) { this.foodOrders = foodOrders; }
-    public String getOrderSpecial() { return orderSpecial; }
-    public void setOrderSpecial(String orderSpecial) { this.orderSpecial = orderSpecial; }
+    public List<OrderItem> getOrderItems() { return orderItems; }
+    public void setOrderItems(List<OrderItem> orderItems) { this.orderItems = orderItems; }
     public double getOrderPrice() { return orderPrice; }
     public void setOrderPrice(double orderPrice) { this.orderPrice = orderPrice; }
     public OrderState getOrderState() { return orderState; }
     public void setOrderState(OrderState orderState) { this.orderState = orderState; }
+
+    public List<Drink> getDrinkOrders() {return drinkOrders;}
+
+    public void setDrinkOrders(List<Drink> drinkOrders) {this.drinkOrders = drinkOrders;}
 }
-
-

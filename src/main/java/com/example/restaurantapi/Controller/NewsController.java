@@ -4,8 +4,7 @@ import com.example.restaurantapi.Models.News.News;
 import com.example.restaurantapi.Repo.NewsRepo;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.DateTimeException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,7 +21,7 @@ public class NewsController {
     public List<News> getAllNews() { return newsRepo.findAll(); }
 
     @GetMapping("/{newsTitle}/{newsDate}")
-    public Optional<News> getNewsByTitleAndDate(@PathVariable String newsTitle, @PathVariable DateTimeException newsDate) {
+    public Optional<News> getNewsByTitleAndDate(@PathVariable String newsTitle, @PathVariable LocalDateTime newsDate) {
         return newsRepo.findNewsByNewsTitleAndNewsDate(newsTitle, newsDate);
     }
 
@@ -47,7 +46,7 @@ public class NewsController {
     }
 
     @PutMapping("/{newsTitle}/{newsDate}")
-    public String updateNews(@PathVariable String newsTitle, @PathVariable DateTimeException newsDate, @RequestBody News news) {
+    public String updateNews(@PathVariable String newsTitle, @PathVariable LocalDateTime newsDate, @RequestBody News news) {
         Optional<News> optionalNews = newsRepo.findNewsByNewsTitleAndNewsDate(newsTitle, newsDate);
         if(optionalNews.isEmpty()) {
             return "News not found for title " + newsTitle + ", date " + newsDate;
@@ -56,13 +55,14 @@ public class NewsController {
         updateNews.setNewsTitle(news.getNewsTitle());
         updateNews.setNewsInfo(news.getNewsInfo());
         updateNews.setNewsDate(news.getNewsDate());
+        updateNews.setNewsURLImage(news.getNewsURLImage());
 
         newsRepo.save(updateNews);
         return "News updated successfully!";
     }
 
     @DeleteMapping("/{newsTitle}/{newsDate}")
-    public String deleteNews(@PathVariable String newsTitle, @PathVariable DateTimeException newsDate) {
+    public String deleteNews(@PathVariable String newsTitle, @PathVariable LocalDateTime newsDate) {
         Optional<News> optionalNews = newsRepo.findNewsByNewsTitleAndNewsDate(newsTitle, newsDate);
         if (optionalNews.isEmpty()) {
             return "News not found for title " + newsTitle + ", date " + newsDate;
