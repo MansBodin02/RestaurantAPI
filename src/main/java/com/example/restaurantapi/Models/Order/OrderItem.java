@@ -24,9 +24,6 @@ public class OrderItem {
     @JoinColumn(name = "drink_id")
     private Drink drink;
 
-
-
-
     @Column
     private int foodQuantity;
 
