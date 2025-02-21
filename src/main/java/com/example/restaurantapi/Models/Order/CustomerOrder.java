@@ -52,6 +52,21 @@ public class CustomerOrder {
     @Column(nullable = false)
     private OrderState orderState;
 
+    public CustomerOrder(Long orderId, int orderTable, LocalDateTime orderDateTime, List<Food> foodOrders, List<Drink> drinkOrders, List<OrderItem> orderItems, double orderPrice, OrderState orderState) {
+        this.orderId = orderId;
+        this.orderTable = orderTable;
+        this.orderDateTime = orderDateTime;
+        this.foodOrders = foodOrders;
+        this.drinkOrders = drinkOrders;
+        this.orderItems = orderItems;
+        this.orderPrice = orderPrice;
+        this.orderState = orderState;
+    }
+
+    public CustomerOrder() {
+
+    }
+
     // Getters and Setters
     public int getOrderTable() { return orderTable; }
     public void setOrderTable(int orderTable) { this.orderTable = orderTable; }

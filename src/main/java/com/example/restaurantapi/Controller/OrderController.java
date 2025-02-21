@@ -9,6 +9,7 @@ import com.example.restaurantapi.Repo.DrinkRepo;
 import com.example.restaurantapi.Repo.OrderRepo;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,15 +33,21 @@ public class OrderController {
     public List<CustomerOrder> getAllOrders() {
         return orderRepo.findAll();
     }
-
-    @GetMapping("/{orderTable}")
+    @GetMapping("/orderId/{orderId}")
+    public CustomerOrder getOrderById(@PathVariable Long orderId) {
+        return orderRepo.findOrderByOrderId(orderId);
+    }
+    @GetMapping("/orderTable/{orderTable}")
     public List<CustomerOrder> getOrdersByTable(@PathVariable int orderTable) {
         return orderRepo.findOrdersByOrderTable(orderTable);
     }
-
-    @GetMapping("/order/{orderState}")
+    @GetMapping("/orderState/{orderState}")
     public List<CustomerOrder> getOrdersByState(@PathVariable OrderState orderState) {
         return orderRepo.findOrdersByOrderState(orderState);
+    }
+    @GetMapping("/orderDateTime/{orderDateTime}")
+    public CustomerOrder getOrderByDateTime(@PathVariable LocalDateTime orderDateTime) {
+        return orderRepo.findOrderByOrderDateTime(orderDateTime);
     }
 
     @PostMapping("/")
@@ -81,11 +88,6 @@ public class OrderController {
             return "Error saving order: " + e.getMessage();
         }
     }
-
-
-
-
-
 
     @PostMapping("/batch")
     public String saveCustomerOrders(@RequestBody List<CustomerOrder> customerOrders) {
@@ -134,11 +136,6 @@ public class OrderController {
         }
     }
 
-
-
-
-
-
     @PutMapping("/{orderTable}")
     public String updateOrders(@PathVariable int orderTable, @RequestBody CustomerOrder customerOrder) {
         List<CustomerOrder> existingOrders = orderRepo.findOrdersByOrderTable(orderTable);
@@ -159,6 +156,30 @@ public class OrderController {
         } catch (Exception e) {
             return "Error updating orders: " + e.getMessage();
         }
+    }
+
+    @PutMapping("/updateStateById/{orderId}")
+    public String updateOrderStateById(@PathVariable Long orderId, @RequestParam OrderState orderState) {
+        CustomerOrder existingCustomerOrder = orderRepo.findOrderByOrderId(orderId);
+        if (existingCustomerOrder == null) {
+            return "Order not found with order id: " + orderId;
+        }
+
+        existingCustomerOrder.setOrderState(orderState);
+        orderRepo.save(existingCustomerOrder);
+        return "Order updated with order state " + orderState;
+    }
+
+    @PutMapping("/updateStateByDate/{orderDateTime}")
+    public String updateOrderStateByDate(@PathVariable LocalDateTime orderDateTime, @RequestParam OrderState orderState) {
+        CustomerOrder existingCustomerOrder = orderRepo.findOrderByOrderDateTime(orderDateTime);
+        if (existingCustomerOrder == null) {
+            return "Order not found with order datetime: " + orderDateTime;
+        }
+
+        existingCustomerOrder.setOrderState(orderState);
+        orderRepo.save(existingCustomerOrder);
+        return "Order updated with order state " + orderState;
     }
 
 
@@ -267,11 +288,6 @@ public class OrderController {
                 "Food " + foodName + " not found in any order at table " + orderTable;
     }
 
-
-
-
-
-
     @PutMapping("/{orderTable}/removeDrink/{drinkName}")
     public String removeDrinkFromOrders(@PathVariable int orderTable, @PathVariable String drinkName) {
         List<CustomerOrder> existingOrders = orderRepo.findOrdersByOrderTable(orderTable);
@@ -311,10 +327,7 @@ public class OrderController {
     }
 
 
-
-
-
-    @DeleteMapping("/{orderTable}")
+    @DeleteMapping("/orderTable/{orderTable}")
     public String deleteOrders(@PathVariable int orderTable) {
         List<CustomerOrder> existingOrders = orderRepo.findOrdersByOrderTable(orderTable);
 
@@ -324,6 +337,13 @@ public class OrderController {
 
         orderRepo.deleteAll(existingOrders);
         return "All orders at table " + orderTable + " deleted successfully!";
+    }
+
+    @DeleteMapping("/orderId/{orderId}")
+    public String deleteOrder(@PathVariable Long orderId) {
+        CustomerOrder existingOrder = orderRepo.findOrderByOrderId(orderId);
+        orderRepo.delete(existingOrder);
+        return "Order with order id" + orderId + " deleted successfully!";
     }
 
 

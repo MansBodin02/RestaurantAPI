@@ -30,8 +30,21 @@ public class Lunch {
     @Column(nullable = false)
     private String lunchDescription;
 
-    // Setters och Getters
+    public Lunch(Long lunchId, String lunchName, int lunchWeek, int lunchDay, double lunchPrice, String lunchDescription) {
+        this.lunchId = lunchId;
+        this.lunchName = lunchName;
+        this.lunchWeek = lunchWeek;
+        this.lunchDay = lunchDay;
+        this.lunchPrice = lunchPrice;
+        this.lunchDescription = lunchDescription;
+    }
 
+    public Lunch() {
+
+    }
+
+
+    // Setters och Getters
     public String getLunchName() {
         return lunchName;
     }
