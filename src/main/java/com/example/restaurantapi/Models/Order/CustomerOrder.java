@@ -3,6 +3,7 @@ package com.example.restaurantapi.Models.Order;
 import com.example.restaurantapi.Models.Drink.Drink;
 import com.example.restaurantapi.Models.Food.Food;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -12,6 +13,7 @@ import java.util.List;
 public class CustomerOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("orderId")
     private Long orderId;
 
     @Column(nullable = false)
