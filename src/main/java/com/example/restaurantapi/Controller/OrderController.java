@@ -170,7 +170,7 @@ public class OrderController {
         return "Order updated with order state " + orderState;
     }
 
-    @PutMapping("/updateStateByDate/{orderDateTime}")
+    @PutMapping("/updateOrderStateByDate/{orderDateTime}")
     public String updateOrderStateByDate(@PathVariable LocalDateTime orderDateTime, @RequestParam OrderState orderState) {
         CustomerOrder existingCustomerOrder = orderRepo.findOrderByOrderDateTime(orderDateTime);
         if (existingCustomerOrder == null) {
