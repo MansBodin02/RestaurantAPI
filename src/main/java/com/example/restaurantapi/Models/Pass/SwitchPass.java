@@ -1,4 +1,4 @@
-package com.example.restaurantapi.Models.Pass;
+/**package com.example.restaurantapi.Models.Pass;
 import com.example.restaurantapi.Models.Personal.Personal;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
@@ -37,3 +37,4 @@ public class SwitchPass {
 
     public void setPersonal(Personal personal) {this.personal = personal;}
 }
+**/
