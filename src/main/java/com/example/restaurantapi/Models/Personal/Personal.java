@@ -4,6 +4,7 @@ import com.example.restaurantapi.Models.Pass.Pass;
 import jakarta.persistence.*;
 
 import java.util.List;
+//class: Personal
 
 @Entity
 public class Personal {
