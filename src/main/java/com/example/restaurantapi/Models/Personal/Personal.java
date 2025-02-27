@@ -1,6 +1,7 @@
 package com.example.restaurantapi.Models.Personal;
 
 import com.example.restaurantapi.Models.Pass.Pass;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 public class Personal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long personalId;
 
     @Column(nullable = false)
@@ -24,6 +26,9 @@ public class Personal {
     }
     public Personal() {}
 
+    public Long getPersonalId() {return personalId;}
+
+    public void setPersonalId(Long personalId) {this.personalId = personalId;}
 
     public String getpersonalName() {return personalName;}
 

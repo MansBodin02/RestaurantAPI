@@ -40,4 +40,14 @@ public class PersonalController {
         return "Personal Saved";
     }
 
+    @DeleteMapping("/{personalID}")
+    public String deletePersonal(@PathVariable Long personalID) {
+        if (personalRepo.existsById(personalID)) {
+            personalRepo.deleteById(personalID);
+            return "Personal deleted successfully";
+        } else {
+            return "Personal not found";
+        }
+    }
+
 }
