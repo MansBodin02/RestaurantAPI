@@ -26,7 +26,19 @@ public class News {
     private LocalDateTime newsDate;
 
     @Column
-    private String newsURLImage;
+    private String newsImage;
+
+    public News(Long newsId, String newsTitle, String newsInfo, LocalDateTime newsDate, String newsImage) {
+        this.newsId = newsId;
+        this.newsTitle = newsTitle;
+        this.newsInfo = newsInfo;
+        this.newsDate = newsDate;
+        this.newsImage = newsImage;
+    }
+
+    public News() {
+
+    }
 
     public String getNewsTitle() {
         return newsTitle;
@@ -52,7 +64,7 @@ public class News {
         this.newsDate = newsDate;
     }
 
-    public String getNewsURLImage() {return newsURLImage;}
+    public String getNewsImage() {return newsImage;}
 
-    public void setNewsURLImage(String newsURLImage) {this.newsURLImage = newsURLImage;}
+    public void setNewsImage(String newsImage) {this.newsImage = newsImage;}
 }

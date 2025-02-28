@@ -3,6 +3,7 @@ package com.example.restaurantapi.Models.Order;
 import com.example.restaurantapi.Models.Drink.Drink;
 import com.example.restaurantapi.Models.Food.Food;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -12,6 +13,7 @@ import java.util.List;
 public class CustomerOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("orderId")
     private Long orderId;
 
     @Column(nullable = false)
@@ -51,6 +53,21 @@ public class CustomerOrder {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OrderState orderState;
+
+    public CustomerOrder(Long orderId, int orderTable, LocalDateTime orderDateTime, List<Food> foodOrders, List<Drink> drinkOrders, List<OrderItem> orderItems, double orderPrice, OrderState orderState) {
+        this.orderId = orderId;
+        this.orderTable = orderTable;
+        this.orderDateTime = orderDateTime;
+        this.foodOrders = foodOrders;
+        this.drinkOrders = drinkOrders;
+        this.orderItems = orderItems;
+        this.orderPrice = orderPrice;
+        this.orderState = orderState;
+    }
+
+    public CustomerOrder() {
+
+    }
 
     // Getters and Setters
     public int getOrderTable() { return orderTable; }

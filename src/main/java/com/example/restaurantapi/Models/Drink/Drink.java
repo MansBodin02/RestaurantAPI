@@ -30,6 +30,19 @@ public class Drink {
     @ManyToMany(mappedBy = "drinkOrders")
     private List<CustomerOrder> customerOrders;
 
+    public Drink(Long drinkId, String drinkName, DrinkCategory drinkCategory, String drinkDescription, double drinkPrice, List<CustomerOrder> customerOrders) {
+        this.drinkId = drinkId;
+        this.drinkName = drinkName;
+        this.drinkCategory = drinkCategory;
+        this.drinkDescription = drinkDescription;
+        this.drinkPrice = drinkPrice;
+        this.customerOrders = customerOrders;
+    }
+
+    public Drink() {
+
+    }
+
     // Getters och Setters
     public Long getDrinkId() { return drinkId; }
     public void setDrinkId(Long drinkId) { this.drinkId = drinkId; }

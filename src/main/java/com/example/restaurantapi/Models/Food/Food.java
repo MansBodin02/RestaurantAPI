@@ -9,10 +9,6 @@ import java.util.List;
         uniqueConstraints = @UniqueConstraint(columnNames = {"food_name"})
 )
 public class Food {
-    public Long getFoodId() {
-        return foodId;
-    }
-
     public void setFoodId(Long foodId) {
         this.foodId = foodId;
     }
@@ -42,7 +38,22 @@ public class Food {
     @ManyToMany(mappedBy = "foodOrders")
     private List<CustomerOrder> customerOrders;
 
+    public Food(Long foodId, String foodName, FoodType foodType, FoodCategory foodCategory, String foodDescription, double foodPrice, List<CustomerOrder> customerOrders) {
+        this.foodId = foodId;
+        this.foodName = foodName;
+        this.foodType = foodType;
+        this.foodCategory = foodCategory;
+        this.foodDescription = foodDescription;
+        this.foodPrice = foodPrice;
+        this.customerOrders = customerOrders;
+    }
+
+    public Food() {
+
+    }
+
     // Getters and Setters
+    public Long getFoodId() { return foodId; }
     public String getFoodName() { return foodName; }
     public void setFoodName(String foodName) { this.foodName = foodName; }
     public FoodType getFoodType() { return foodType; }

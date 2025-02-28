@@ -55,7 +55,7 @@ public class NewsController {
         updateNews.setNewsTitle(news.getNewsTitle());
         updateNews.setNewsInfo(news.getNewsInfo());
         updateNews.setNewsDate(news.getNewsDate());
-        updateNews.setNewsURLImage(news.getNewsURLImage());
+        updateNews.setNewsImage(news.getNewsImage());
 
         newsRepo.save(updateNews);
         return "News updated successfully!";
