@@ -3,6 +3,8 @@ package com.example.restaurantapi.Controller;
 import com.example.restaurantapi.Models.Personal.Personal;
 import com.example.restaurantapi.Repo.PersonalRepo;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,35 +21,47 @@ public class PersonalController {
         this.personalRepo = personalRepo;
     }
 
+    // Hämta alla personal
     @GetMapping("/")
-    public List<Personal> getAllPersonal() {
-        return personalRepo.findAll();
+    public ResponseEntity<List<Personal>> getAllPersonal() {
+        return ResponseEntity.ok(personalRepo.findAll());
     }
 
+    // Hämta en enskild personal baserat på ID
+    @GetMapping("/{personalID}")
+    public ResponseEntity<Personal> getPersonalById(@PathVariable Long personalID) {
+        return personalRepo.findById(personalID)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
+    // Skapa en personal
     @PostMapping("/")
-    public String savePersonal(@RequestBody Personal personal) {
+    public ResponseEntity<String> savePersonal(@RequestBody Personal personal) {
         try {
             personalRepo.save(personal);
-            return "Personal Saved";
+            return ResponseEntity.status(HttpStatus.CREATED).body("Personal Saved");
         } catch (DataIntegrityViolationException e) {
-            return "Error: " + e.getMessage();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
         }
     }
 
+    // Skapa flera personal samtidigt
     @PostMapping("/batch")
-    public String savePersonals(@RequestBody List<Personal> personals) {
+    public ResponseEntity<String> savePersonals(@RequestBody List<Personal> personals) {
         personalRepo.saveAll(personals);
-        return "Personal Saved";
+        return ResponseEntity.status(HttpStatus.CREATED).body("Personal Saved");
     }
 
+    // Ta bort en personal baserat på ID
     @DeleteMapping("/{personalID}")
-    public String deletePersonal(@PathVariable Long personalID) {
+    public ResponseEntity<String> deletePersonal(@PathVariable Long personalID) {
         if (personalRepo.existsById(personalID)) {
             personalRepo.deleteById(personalID);
-            return "Personal deleted successfully";
+            return ResponseEntity.ok("Personal deleted successfully");
         } else {
-            return "Personal not found";
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Personal not found");
         }
     }
-
 }
+

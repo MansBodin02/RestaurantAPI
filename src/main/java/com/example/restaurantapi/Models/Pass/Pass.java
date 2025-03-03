@@ -27,9 +27,10 @@ public class Pass {
             name = "pass_personal",
             joinColumns = @JoinColumn(name = "pass_id"),
             inverseJoinColumns = @JoinColumn(name = "personal_id")
-
     )
     private List<Personal> personalPass;
+
+    public Pass() {}
 
     public Pass(Long passId, LocalDateTime passDateTime, PassType passType) {
         this.passId = passId;
@@ -37,7 +38,7 @@ public class Pass {
         this.passType = passType;
     }
 
-    public Pass() {}
+    public Long getPassId() { return passId; }
 
     public LocalDateTime getPassDateTime() { return passDateTime; }
 
@@ -46,4 +47,12 @@ public class Pass {
     public PassType getPassType() { return passType; }
 
     public void setPassType(PassType passType) { this.passType = passType; }
+
+    public List<Personal> getPersonalPass() {
+        return personalPass;
+    }
+
+    public void setPersonalPass(List<Personal> personalPass) {
+        this.personalPass = personalPass;
+    }
 }
