@@ -1,16 +1,19 @@
 package com.example.restaurantapi.Controller;
+
 import com.example.restaurantapi.Models.Drink.Drink;
 import com.example.restaurantapi.Models.Food.Food;
 import com.example.restaurantapi.Models.Order.CustomerOrder;
+import com.example.restaurantapi.Models.Order.OrderCategory;
 import com.example.restaurantapi.Models.Order.OrderItem;
 import com.example.restaurantapi.Models.Order.OrderState;
-import com.example.restaurantapi.Repo.FoodRepo;
 import com.example.restaurantapi.Repo.DrinkRepo;
+import com.example.restaurantapi.Repo.FoodRepo;
 import com.example.restaurantapi.Repo.OrderRepo;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -36,6 +39,10 @@ public class OrderController {
     @GetMapping("/orderId/{orderId}")
     public CustomerOrder getOrderById(@PathVariable Long orderId) {
         return orderRepo.findOrderByOrderId(orderId);
+    }
+    @GetMapping("/orderCategory/{orderCategory}")
+    public List<CustomerOrder> getOrdersByOrderCategory(@PathVariable OrderCategory orderCategory) {
+        return orderRepo.findCustomerOrdersByOrderCategory(orderCategory);
     }
     @GetMapping("/orderTable/{orderTable}")
     public List<CustomerOrder> getOrdersByTable(@PathVariable int orderTable) {
@@ -150,6 +157,7 @@ public class OrderController {
                 existingOrder.setOrderDateTime(customerOrder.getOrderDateTime());
                 existingOrder.setOrderPrice(customerOrder.getOrderPrice());
                 existingOrder.setOrderState(customerOrder.getOrderState());
+
                 orderRepo.save(existingOrder);
             }
             return "All orders at table " + orderTable + " updated successfully!";

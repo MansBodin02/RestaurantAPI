@@ -54,7 +54,12 @@ public class CustomerOrder {
     @Column(nullable = false)
     private OrderState orderState;
 
-    public CustomerOrder(Long orderId, int orderTable, LocalDateTime orderDateTime, List<Food> foodOrders, List<Drink> drinkOrders, List<OrderItem> orderItems, double orderPrice, OrderState orderState) {
+    @Column(nullable = false)
+    private OrderCategory orderCategory;
+
+    public CustomerOrder(Long orderId, int orderTable, LocalDateTime orderDateTime, List<Food> foodOrders,
+                         List<Drink> drinkOrders, List<OrderItem> orderItems, double orderPrice,
+                         OrderState orderState, OrderCategory orderCategory) {
         this.orderId = orderId;
         this.orderTable = orderTable;
         this.orderDateTime = orderDateTime;
@@ -63,6 +68,7 @@ public class CustomerOrder {
         this.orderItems = orderItems;
         this.orderPrice = orderPrice;
         this.orderState = orderState;
+        this.orderCategory = orderCategory;
     }
 
     public CustomerOrder() {
@@ -82,6 +88,8 @@ public class CustomerOrder {
     public void setOrderPrice(double orderPrice) { this.orderPrice = orderPrice; }
     public OrderState getOrderState() { return orderState; }
     public void setOrderState(OrderState orderState) { this.orderState = orderState; }
+    public OrderCategory getOrderCategory() { return orderCategory; }
+    public void setOrderCategory(OrderCategory orderCategory) { this.orderCategory = orderCategory; }
 
     public List<Drink> getDrinkOrders() {return drinkOrders;}
 
