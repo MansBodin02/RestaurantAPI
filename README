@@ -254,6 +254,76 @@ POST	/api/news/	                        Lägg till en nyhet.
 POST	/api/news/batch	                    Lägg till flera nyheter.
 PUT	    /api/news/{newsTitle}/{newsDate}	Uppdatera en nyhet.
 DELETE	/api/news/{newsTitle}/{newsDate}	Radera en nyhet.
+
+Exempel på att skapa en news med POST:
+URL: http://localhost:8080/api/news/
+json
+{
+    "newsTitle": "Ny Meny För Säsongen!",
+    "newsInfo": "Vi introducerar vår nya meny för våren, full med läckra rätter och uppfriskande drycker.",
+    "newsDate": "2025-03-01T12:00:00",
+    "newsImage": "https://example.com/images/spring_menu.jpg"
+}
+
+
+
+🕴️ Personal Controller (/api/personal)
+Hantera personal i restaurangen. Varje personalmedlem har ett namn och är kopplat till ett eller flera arbetspass.
+
+Metod	  Endpoint	                      Beskrivning
+GET	    /api/personal/	                Hämta alla personalmedlemmar.
+GET	    /api/personal/{personalId}	    Hämta en specifik personalmedlem.
+POST	  /api/personal/	                Lägg till en ny personalmedlem.
+PUT	    /api/personal/{personalId}	    Uppdatera en personalmedlem.
+DELETE	/api/personal/{personalId}	    Ta bort en personalmedlem.
+
+Exempel på att skapa en personalmedlem med POST:
+URL: http://localhost:8080/api/personal/
+json
+{
+  "personalName": "Anton Svensson"
+}
+
+Exempel på att skapa flear personalmedlem med POST:
+URL: http://localhost:8080/api/personal/batch
+json
+[
+  {
+    "personalName": "Anton Andersson"
+  },
+  {
+    "personalName": "Lisa Karlsson"
+  }
+]
+
+⏰ Pass Controller (/api/pass)
+Hantera arbetspass och tilldelningar av personal till pass. Varje pass har ett typ (t.ex. Morgon, Kväll) och kan tilldelas flera personalmedlemmar.
+
+Metod	    Endpoint	                                Beskrivning
+GET	      /api/pass/	                              Hämta alla pass.
+GET	      /api/pass/{passId}	                      Hämta ett specifikt pass.
+GET	      /api/pass/date/{date}	                    Hämta pass för ett specifikt datum.
+POST	    /api/pass/	                              Skapa ett nytt pass.
+POST	    /api/pass/request	                        Skicka en begäran om passbyte.
+PUT	      /api/pass/{passId}/assign/{personalId}	  Tilldela en personalmedlem till ett pass.
+PUT	      /api/pass/{switchPassId}/update-status	  Uppdatera status på ett passbyte.
+DELETE	  /api/pass/{passId}	                      Ta bort ett pass.
+
+
+Exempel på att skapa ett pass med POST:
+URL: http://localhost:8080/api/pass/
+json
+{
+  "passDateTime": "2025-03-05T08:00:00",
+  "passType": "STARTERSHIFT",
+  "personalPass": [
+    {
+      "personalId": 1
+    }
+  ]
+}
+
+
 🛠️ Teknologier som används
 Java 17
 Spring Boot
