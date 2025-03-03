@@ -1,21 +1,25 @@
 package com.example.restaurantapi.Controller;
 
+import com.example.restaurantapi.Models.Order.CustomerOrder;
 import com.example.restaurantapi.Models.Pass.Pass;
+import com.example.restaurantapi.Models.Personal.Personal;
 import com.example.restaurantapi.Repo.PassRepo;
+import com.example.restaurantapi.Repo.PersonalRepo;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-//Controller: PassController
-
-
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/pass")
 public class PassController {
     private final PassRepo passRepo;
+    private final PersonalRepo personalRepo;
 
-    public PassController(PassRepo passRepo) {
+    public PassController(PassRepo passRepo, PersonalRepo personalRepo) {
         this.passRepo = passRepo;
+        this.personalRepo = personalRepo;
     }
 
     @GetMapping("/")
@@ -25,13 +29,22 @@ public class PassController {
 
     @PostMapping("/")
     public String savePass(@RequestBody Pass pass) {
-        passRepo.save(pass);
-        return "Pass Saved";
-    }
+        List<Personal> personalList = pass.getPersonalPass().stream()
+                .map(personal -> {
+                    Optional<Personal> existingPersonal = personalRepo.findByPersonalName((personal.getpersonalName()));
+                    return existingPersonal.orElseGet(() -> {
 
-    @PostMapping("/batch")
-    public String savePasses(@RequestBody List<Pass> passes) {
-        passRepo.saveAll(passes);
+                        Personal newPersonal = new Personal();
+                        newPersonal.setpersonalName(personal.getpersonalName());
+                        return personalRepo.save(newPersonal);
+                    });
+                })
+                .collect(Collectors.toList());
+
+        pass.setPersonalPass(personalList);
+
+        // Spara passet
+        passRepo.save(pass);
         return "Pass Saved";
     }
 }
