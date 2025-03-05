@@ -28,6 +28,7 @@ public class Pass {
             joinColumns = @JoinColumn(name = "pass_id"),
             inverseJoinColumns = @JoinColumn(name = "personal_id")
     )
+    @Column(nullable = false)
     private List<Personal> personalPass;
 
     public Pass() {}

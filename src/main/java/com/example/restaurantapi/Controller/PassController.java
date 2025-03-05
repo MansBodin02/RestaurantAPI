@@ -8,6 +8,7 @@ import com.example.restaurantapi.Models.Personal.Personal;
 import com.example.restaurantapi.Repo.PassRepo;
 import com.example.restaurantapi.Repo.PersonalRepo;
 import com.example.restaurantapi.Repo.SwitchPassRepo;
+import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -45,6 +47,17 @@ public class PassController {
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
+    @GetMapping("/requests/{receiverId}")
+    public ResponseEntity<List<SwitchPass>> getPendingSwitchRequests(@PathVariable Long receiverId) {
+        List<SwitchPass> requests = switchPassRepo.findByReceiverPersonalId(receiverId);
+
+        if (requests.isEmpty()) {
+            return ResponseEntity.ok(Collections.emptyList());
+        }
+
+        return ResponseEntity.ok(requests);
+    }
+
     @GetMapping("/date/{date}")
     public ResponseEntity<List<Pass>> getPassByDate(@PathVariable String date) {
         LocalDate localDate = LocalDate.parse(date);
@@ -66,6 +79,8 @@ public class PassController {
     public ResponseEntity<List<SwitchPass>> getRequestsByStatus(@PathVariable PassStatus status) {
         return ResponseEntity.ok(switchPassRepo.findByPassStatus(status));
     }
+
+
     @PostMapping("/")
     public ResponseEntity<String> createPass(@RequestBody Pass pass) {
         passRepo.save(pass);
@@ -81,6 +96,16 @@ public class PassController {
         Optional<Personal> requesterOpt = personalRepo.findById(requesterId);
         Optional<Personal> receiverOpt = personalRepo.findById(receiverId);
         Optional<Pass> passOpt = passRepo.findById(passId);
+
+        if (!passOpt.get().getPersonalPass().contains(requesterOpt.get())) {
+            return ResponseEntity.badRequest().body("Requester does not own this pass!");
+        }
+
+        boolean exists = switchPassRepo.existsByRequesterAndReceiverAndPass(requesterOpt.get(), receiverOpt.get(), passOpt.get());
+        if (exists) {
+            return ResponseEntity.badRequest().body("Request already exists!");
+        }
+
 
         if (requesterOpt.isPresent() && receiverOpt.isPresent() && passOpt.isPresent()) {
             SwitchPass switchPass = new SwitchPass(requesterOpt.get(), receiverOpt.get(), passOpt.get());
@@ -109,7 +134,7 @@ public class PassController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Pass or Personal not found");
         }
     }
-
+    @Transactional
     @PutMapping("/{switchPassId}/update-status")
     public ResponseEntity<String> updatePassSwitchStatus(
             @PathVariable Long switchPassId,
@@ -119,22 +144,29 @@ public class PassController {
 
         if (switchPassOpt.isPresent()) {
             SwitchPass switchPass = switchPassOpt.get();
-            switchPass.setPassStatus(status);
 
             if (status == PassStatus.APPROVED) {
-                // Bytet accepteras -> Ändra passets personal
+                // Om passbytet godkänns -> Uppdatera passets personal
                 Pass pass = switchPass.getPass();
                 pass.getPersonalPass().remove(switchPass.getRequester()); // Ta bort den gamla personen
                 pass.getPersonalPass().add(switchPass.getReceiver()); // Lägg till den nya personen
                 passRepo.save(pass);
+
+                switchPass.setPassStatus(status);
+                switchPassRepo.save(switchPass);
+                return ResponseEntity.ok("Pass switch approved.");
+            } else if (status == PassStatus.DECLINED) {
+                // Om passbytet nekas -> Ta bort SwitchPass från databasen
+                switchPassRepo.delete(switchPass);
+                return ResponseEntity.ok("Pass switch declined and removed.");
             }
 
-            switchPassRepo.save(switchPass);
-            return ResponseEntity.ok("Pass switch updated to " + status);
+            return ResponseEntity.badRequest().body("Invalid status provided.");
         } else {
             return ResponseEntity.badRequest().body("Switch request not found.");
         }
     }
+
     @DeleteMapping("/{passId}")
     public ResponseEntity<String> deletePass(@PathVariable Long passId) {
         if (passRepo.existsById(passId)) {
