@@ -80,6 +80,33 @@ public class PassController {
         return ResponseEntity.ok(switchPassRepo.findByPassStatus(status));
     }
 
+    @GetMapping("/requests/personal/{personalId}")
+    public ResponseEntity<List<SwitchPass>> getSwitchRequestsForPersonal(@PathVariable Long personalId) {
+        List<SwitchPass> requests = switchPassRepo.findByRequesterPersonalIdOrReceiverPersonalId(personalId, personalId);
+
+        if (requests.isEmpty()) {
+            return ResponseEntity.ok(Collections.emptyList());
+        }
+
+        return ResponseEntity.ok(requests);
+    }
+
+    @GetMapping("/personal/{personalId}")
+    public ResponseEntity<List<Pass>> getPassesForPersonal(@PathVariable Long personalId) {
+        Optional<Personal> personalOpt = personalRepo.findById(personalId);
+
+        if (personalOpt.isPresent()) {
+            List<Pass> passes = passRepo.findAll()
+                    .stream()
+                    .filter(pass -> pass.getPersonalPass().contains(personalOpt.get()))
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(passes);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
+        }
+    }
+
+
 
     @PostMapping("/")
     public ResponseEntity<String> createPass(@RequestBody Pass pass) {
@@ -134,6 +161,28 @@ public class PassController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Pass or Personal not found");
         }
     }
+
+    @PutMapping("/{passId}/remove/{personalId}")
+    public ResponseEntity<String> removePersonalFromPass(@PathVariable Long passId, @PathVariable Long personalId) {
+        Optional<Pass> optionalPass = passRepo.findById(passId);
+        Optional<Personal> optionalPersonal = personalRepo.findById(personalId);
+
+        if (optionalPass.isPresent() && optionalPersonal.isPresent()) {
+            Pass pass = optionalPass.get();
+            Personal personal = optionalPersonal.get();
+
+            if (pass.getPersonalPass().contains(personal)) {
+                pass.getPersonalPass().remove(personal);
+                passRepo.save(pass);
+                return ResponseEntity.ok("Personal removed from pass");
+            } else {
+                return ResponseEntity.badRequest().body("Personal is not assigned to this pass");
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Pass or Personal not found");
+        }
+    }
+
     @Transactional
     @PutMapping("/{switchPassId}/update-status")
     public ResponseEntity<String> updatePassSwitchStatus(

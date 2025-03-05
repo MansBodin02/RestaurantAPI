@@ -17,4 +17,5 @@ public interface SwitchPassRepo extends JpaRepository<SwitchPass, Long> {
     List<SwitchPass> findByReceiverPersonalId(Long receiverId);
 
 
+    List<SwitchPass> findByRequesterPersonalIdOrReceiverPersonalId(Long personalId, Long personalId1);
 }
