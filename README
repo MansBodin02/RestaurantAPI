@@ -351,7 +351,7 @@ json
   ]
 }
 
-Skicka en request från personalId=1 till personalId=2 och passId=1 med PUT:
+Skicka en request från personalId=1 till personalId=2 och passId=1 med POST:
 URL: http://localhost:8080/api/pass/request?requesterId=1&receiverId=2&passId=1
 
 Hämta alla requests för ett visst id med GET:
