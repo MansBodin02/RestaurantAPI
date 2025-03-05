@@ -299,15 +299,21 @@ json
 ⏰ Pass Controller (/api/pass)
 Hantera arbetspass och tilldelningar av personal till pass. Varje pass har ett typ (t.ex. Morgon, Kväll) och kan tilldelas flera personalmedlemmar.
 
-Metod	    Endpoint	                                Beskrivning
-GET	      /api/pass/	                              Hämta alla pass.
-GET	      /api/pass/{passId}	                      Hämta ett specifikt pass.
-GET	      /api/pass/date/{date}	                    Hämta pass för ett specifikt datum.
-POST	    /api/pass/	                              Skapa ett nytt pass.
-POST	    /api/pass/request	                        Skicka en begäran om passbyte.
-PUT	      /api/pass/{passId}/assign/{personalId}	  Tilldela en personalmedlem till ett pass.
-PUT	      /api/pass/{switchPassId}/update-status	  Uppdatera status på ett passbyte.
-DELETE	  /api/pass/{passId}	                      Ta bort ett pass.
+Metod	                    Endpoint	                                 Beskrivning
+GET	                      /api/pass/	                               Hämta alla pass.
+GET	                      /api/pass/{passId}	                       Hämta ett specifikt pass.
+GET	                      /api/pass/date/{date}	                     Hämta pass för ett specifikt datum.
+GET	                      /api/pass/type/{passType}	                 Hämta alla pass av en viss typ (MORGON, KVÄLL etc.).
+GET	                      /api/pass/status/{status}	                 Hämta alla passbytesförfrågningar baserade på status (PENDING, APPROVED, DECLINED).
+GET	                      /api/pass/requests/{receiverId}	           Hämta alla inkommande passbytesförfrågningar för en specifik personal.
+GET	                      /api/pass/requests/personal/{personalId}	 Hämta alla passbytesförfrågningar där personalen är inblandad (både inkommande och utgående).
+GET	                      /api/pass/personal/{personalId}	           Hämta alla pass som en specifik personal är tilldelad.
+POST	                    /api/pass/	                               Skapa ett nytt pass.
+POST	                    /api/pass/request	                         Skicka en begäran om passbyte.
+PUT	                      /api/pass/{passId}/assign/{personalId}	   Tilldela en personalmedlem till ett pass.
+PUT	                      /api/pass/{passId}/remove/{personalId}	   Ta bort en personal från ett pass.
+PUT	                      /api/pass/{switchPassId}/update-status	   Uppdatera status på ett passbyte (APPROVED, DECLINED).
+DELETE	                  /api/pass/{passId}	                       Ta bort ett pass.
 
 
 Exempel på att skapa ett pass med POST:
