@@ -254,6 +254,144 @@ POST	/api/news/	                        Lägg till en nyhet.
 POST	/api/news/batch	                    Lägg till flera nyheter.
 PUT	    /api/news/{newsTitle}/{newsDate}	Uppdatera en nyhet.
 DELETE	/api/news/{newsTitle}/{newsDate}	Radera en nyhet.
+
+Exempel på att skapa en news med POST:
+URL: http://localhost:8080/api/news/
+json
+{
+    "newsTitle": "Ny Meny För Säsongen!",
+    "newsInfo": "Vi introducerar vår nya meny för våren, full med läckra rätter och uppfriskande drycker.",
+    "newsDate": "2025-03-01T12:00:00",
+    "newsImage": "https://example.com/images/spring_menu.jpg"
+}
+
+
+
+🕴️ Personal Controller (/api/personal)
+Hantera personal i restaurangen. Varje personalmedlem har ett namn och är kopplat till ett eller flera arbetspass.
+
+Metod	  Endpoint	                      Beskrivning
+GET	    /api/personal/	                Hämta alla personalmedlemmar.
+GET	    /api/personal/{personalId}	    Hämta en specifik personalmedlem.
+POST	  /api/personal/	                Lägg till en ny personalmedlem.
+PUT	    /api/personal/{personalId}	    Uppdatera en personalmedlem.
+DELETE	/api/personal/{personalId}	    Ta bort en personalmedlem.
+
+Exempel på att skapa en personalmedlem med POST:
+URL: http://localhost:8080/api/personal/
+json
+{
+  "personalName": "Anton Svensson"
+}
+
+Exempel på att skapa flear personalmedlem med POST:
+URL: http://localhost:8080/api/personal/batch
+json
+[
+  {
+    "personalName": "Anton Andersson"
+  },
+  {
+    "personalName": "Lisa Karlsson"
+  }
+]
+
+⏰ Pass Controller (/api/pass)
+Hantera arbetspass och tilldelningar av personal till pass. Varje pass har ett typ (t.ex. Morgon, Kväll) och kan tilldelas flera personalmedlemmar.
+
+Metod	                    Endpoint	                                 Beskrivning
+GET	                      /api/pass/	                               Hämta alla pass.
+GET	                      /api/pass/{passId}	                       Hämta ett specifikt pass.
+GET	                      /api/pass/date/{date}	                     Hämta pass för ett specifikt datum.
+GET	                      /api/pass/type/{passType}	                 Hämta alla pass av en viss typ (MORGON, KVÄLL etc.).
+GET	                      /api/pass/status/{status}	                 Hämta alla passbytesförfrågningar baserade på status (PENDING, APPROVED, DECLINED).
+GET	                      /api/pass/requests/{receiverId}	           Hämta alla inkommande passbytesförfrågningar för en specifik personal.
+GET	                      /api/pass/requests/personal/{personalId}	 Hämta alla passbytesförfrågningar där personalen är inblandad (både inkommande och utgående).
+GET	                      /api/pass/personal/{personalId}	           Hämta alla pass som en specifik personal är tilldelad.
+POST	                    /api/pass/	                               Skapa ett nytt pass.
+POST	                    /api/pass/request	                         Skicka en begäran om passbyte.
+PUT	                      /api/pass/{passId}/assign/{personalId}	   Tilldela en personalmedlem till ett pass.
+PUT	                      /api/pass/{passId}/remove/{personalId}	   Ta bort en personal från ett pass.
+PUT	                      /api/pass/{switchPassId}/update-status	   Uppdatera status på ett passbyte (APPROVED, DECLINED).
+DELETE	                  /api/pass/{passId}	                       Ta bort ett pass.
+
+
+Exempel på att skapa ett pass med POST:
+URL: http://localhost:8080/api/pass/
+json
+{
+  "passDateTime": "2025-03-05T08:00:00",
+  "passType": "STARTERSHIFT",
+  "personalPass": [
+    {
+      "personalId": 1
+    }
+  ]
+}
+
+Exempel på att skicka en request att byta pass med POST:
+Först skapa två personal:
+URL: http://localhost:8080/api/personal/
+json
+[
+    {
+        "personalId": 1,
+        "personalName": "Anton Andersson"
+    },
+    {
+        "personalId": 2,
+        "personalName": "Lisa Persson"
+    }
+]
+
+Skapa ett pass med en personal med POST:
+URL: http://localhost:8080/api/pass/
+json
+{
+  "passDateTime": "2025-03-10T08:00:00",
+  "passType": "STARTERSHIFT",
+  "personalPass": [
+      {
+          "personalId": 1
+      }
+  ]
+}
+
+Skicka en request från personalId=1 till personalId=2 och passId=1 med POST:
+URL: http://localhost:8080/api/pass/request?requesterId=1&receiverId=2&passId=1
+
+Hämta alla requests för ett visst id med GET:
+URL: http://localhost:8080/api/pass/requests/2
+json
+[
+    {
+        "switchPassId": 1,
+        "passStatus": "PENDING",
+        "requester": {
+            "personalId": 1,
+            "personalName": "Anton Andersson"
+        },
+        "receiver": {
+            "personalId": 2,
+            "personalName": "Lisa Persson"
+        },
+        "pass": {
+            "passId": 1,
+            "passDateTime": "2025-03-10T08:00:00",
+            "passType": "STARTERSHIFT",
+            "personalPass": [
+                {
+                    "personalId": 1,
+                    "personalName": "Anton Andersson"
+                }
+            ]
+        }
+    }
+]
+
+Byt pass om det accepteras med PUT:
+URL: http://localhost:8080/api/pass/1/assign/2
+
 🛠️ Teknologier som används
 Java 17
 Spring Boot

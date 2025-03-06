@@ -11,7 +11,6 @@ import java.util.List;
 public class Personal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
     private Long personalId;
 
     @Column(nullable = false)
@@ -20,17 +19,18 @@ public class Personal {
     @ManyToMany(mappedBy = "personalPass")
     private List<Pass> passes;
 
+    public Personal() {}
+
     public Personal(Long id, String personalName) {
         this.personalId = id;
         this.personalName = personalName;
     }
-    public Personal() {}
 
-    public Long getPersonalId() {return personalId;}
+    public Long getPersonalId() { return personalId; }
 
-    public void setPersonalId(Long personalId) {this.personalId = personalId;}
+    public void setPersonalId(Long personalId) { this.personalId = personalId; }
 
-    public String getpersonalName() {return personalName;}
+    public String getPersonalName() { return personalName; }
 
-    public void setpersonalName(String personalName) {this.personalName = personalName;}
+    public void setPersonalName(String personalName) { this.personalName = personalName; }
 }

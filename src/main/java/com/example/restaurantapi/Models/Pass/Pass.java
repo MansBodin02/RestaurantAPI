@@ -1,12 +1,13 @@
 package com.example.restaurantapi.Models.Pass;
 
 import com.example.restaurantapi.Models.Personal.Personal;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
+
+//class: Pass
+
 
 @Entity
 public class Pass {
@@ -27,7 +28,10 @@ public class Pass {
             joinColumns = @JoinColumn(name = "pass_id"),
             inverseJoinColumns = @JoinColumn(name = "personal_id")
     )
+    @Column(nullable = false)
     private List<Personal> personalPass;
+
+    public Pass() {}
 
     public Pass(Long passId, LocalDateTime passDateTime, PassType passType) {
         this.passId = passId;
@@ -35,11 +39,7 @@ public class Pass {
         this.passType = passType;
     }
 
-    public Pass() {}
-
     public Long getPassId() { return passId; }
-
-    public void setPassId(Long passId) { this.passId = passId; }
 
     public LocalDateTime getPassDateTime() { return passDateTime; }
 
@@ -49,15 +49,11 @@ public class Pass {
 
     public void setPassType(PassType passType) { this.passType = passType; }
 
-    public List<Personal> getPersonalPass() { return personalPass; }
+    public List<Personal> getPersonalPass() {
+        return personalPass;
+    }
 
-    public void setPersonalPass(List<Personal> personalPass) { this.personalPass = personalPass; }
-
-    // Ny metod för att endast returnera personalName istället för hela Personal-objektet
-    @JsonProperty("personalPass")
-    public List<String> getPersonalPassNames() {
-        return personalPass.stream()
-                .map(Personal::getpersonalName)  // Konvertera varje Personal till dess namn
-                .collect(Collectors.toList());
+    public void setPersonalPass(List<Personal> personalPass) {
+        this.personalPass = personalPass;
     }
 }

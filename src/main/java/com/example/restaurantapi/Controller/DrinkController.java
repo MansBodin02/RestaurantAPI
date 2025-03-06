@@ -8,6 +8,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * DrinkController - A REST API controller for managing drinks in the restaurant system.
+ * Provides endpoints to create, retrieve, update, and delete drinks.
+ */
 @RestController
 @RequestMapping("/api/drinks")
 public class DrinkController {
@@ -18,26 +22,41 @@ public class DrinkController {
         this.drinkRepo = drinkRepo;
     }
 
-    // Hämta alla drycker
+    /**
+     * Retrieve all drinks from the database.
+     * @return List of all available drinks.
+     */
     @GetMapping("/")
     public List<Drink> getAllDrinks() {
         return drinkRepo.findAll();
     }
 
-    // Hämta drycker efter kategori
+    /**
+     * Retrieve drinks based on their category.
+     * @param drinkCategory The category of drinks to filter by.
+     * @return List of drinks matching the specified category.
+     */
     @GetMapping("/category/{drinkCategory}")
     public List<Drink> getDrinksByCategory(@PathVariable DrinkCategory drinkCategory) {
         return drinkRepo.findDrinkByDrinkCategory(drinkCategory);
     }
 
-    // Hämta en specifik dryck via namn
+    /**
+     * Retrieve a specific drink by its name.
+     * @param drinkName The name of the drink.
+     * @return The drink object if found.
+     */
     @GetMapping("/drink/{drinkName}")
     public Drink getDrink(@PathVariable String drinkName) {
         return drinkRepo.findDrinkByDrinkName(drinkName)
                 .orElseThrow(() -> new IllegalArgumentException("Drink not found: " + drinkName));
     }
 
-    // Skapa en ny dryck
+    /**
+     * Save a new drink to the database.
+     * @param drink The drink object to be saved.
+     * @return Success or error message.
+     */
     @PostMapping("/")
     public String saveDrink(@RequestBody Drink drink) {
         try {
@@ -48,7 +67,11 @@ public class DrinkController {
         }
     }
 
-    // Skapa flera drycker i batch
+    /**
+     * Save multiple drinks to the database in a batch operation.
+     * @param drinks List of drinks to be saved.
+     * @return Success or error message.
+     */
     @PostMapping("/batch")
     public String saveDrinks(@RequestBody List<Drink> drinks) {
         try {
@@ -59,13 +82,18 @@ public class DrinkController {
         }
     }
 
-    // Uppdatera en dryck via namn
+    /**
+     * Update an existing drink by its name.
+     * @param drinkName The name of the drink to be updated.
+     * @param drink The new drink details.
+     * @return Success message.
+     */
     @PutMapping("/drink/{drinkName}")
     public String updateDrink(@PathVariable String drinkName, @RequestBody Drink drink) {
         Drink updateDrink = drinkRepo.findDrinkByDrinkName(drinkName)
                 .orElseThrow(() -> new IllegalArgumentException("Drink not found: " + drinkName));
 
-        // Uppdatera drycken
+        // Update drink details
         updateDrink.setDrinkName(drink.getDrinkName());
         updateDrink.setDrinkPrice(drink.getDrinkPrice());
 
@@ -73,7 +101,11 @@ public class DrinkController {
         return "Drink updated successfully!";
     }
 
-    // Ta bort en dryck via namn
+    /**
+     * Delete a drink from the database by its name.
+     * @param drinkName The name of the drink to be deleted.
+     * @return Success message.
+     */
     @DeleteMapping("/drink/{drinkName}")
     public String deleteDrink(@PathVariable String drinkName) {
         Drink drink = drinkRepo.findDrinkByDrinkName(drinkName)
