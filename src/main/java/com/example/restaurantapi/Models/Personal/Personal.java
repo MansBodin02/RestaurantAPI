@@ -1,7 +1,6 @@
 package com.example.restaurantapi.Models.Personal;
 
 import com.example.restaurantapi.Models.Pass.Pass;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -16,14 +15,19 @@ public class Personal {
     @Column(nullable = false)
     private String personalName;
 
+    @Column(nullable = false)
+    private String deviceNumber;
+
     @ManyToMany(mappedBy = "personalPass")
     private List<Pass> passes;
 
-    public Personal() {}
+    public Personal() {
+    }
 
-    public Personal(Long id, String personalName) {
+    public Personal(Long id, String personalName, String deviceNumber) {
         this.personalId = id;
         this.personalName = personalName;
+        this.deviceNumber = deviceNumber;
     }
 
     public Long getPersonalId() { return personalId; }
@@ -33,4 +37,8 @@ public class Personal {
     public String getPersonalName() { return personalName; }
 
     public void setPersonalName(String personalName) { this.personalName = personalName; }
+
+    public String getDeviceNumber() {return deviceNumber;}
+
+    public void setDeviceNumber(String deviceNumber) {this.deviceNumber = deviceNumber;}
 }

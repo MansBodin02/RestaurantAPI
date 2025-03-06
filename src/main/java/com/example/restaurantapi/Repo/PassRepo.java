@@ -7,12 +7,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.restaurantapi.Models.Pass.PassType;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
 public interface PassRepo extends JpaRepository<Pass, Long> {
-    List<Pass> findByPassDateTimeBetween(LocalDateTime start, LocalDateTime end);
+    List<Pass> findByPassDateTimeBetween(LocalDate start, LocalDate end);
     List<Pass> findByPassType(PassType passType);
 }
 

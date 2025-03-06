@@ -3,6 +3,6 @@ package com.example.restaurantapi.Models.Pass;
 
 
 public enum PassStatus {
-    PENDING, APPROVED, DECLINED
+    PENDING, APPROVED, DECLINED, SICK
 }
 

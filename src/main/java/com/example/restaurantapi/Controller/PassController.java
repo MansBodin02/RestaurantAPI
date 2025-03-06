@@ -12,10 +12,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -57,7 +53,7 @@ public class PassController {
 
         return ResponseEntity.ok(requests);
     }
-
+/**
     @GetMapping("/date/{date}")
     public ResponseEntity<List<Pass>> getPassByDate(@PathVariable String date) {
         LocalDate localDate = LocalDate.parse(date);
@@ -67,6 +63,7 @@ public class PassController {
         List<Pass> passes = passRepo.findByPassDateTimeBetween(startOfDay, endOfDay);
         return ResponseEntity.ok(passes);
     }
+**/
 
     // Hämta alla pass av en viss typ (ex: MORGON, KVÄLL)
     @GetMapping("/type/{passType}")

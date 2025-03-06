@@ -3,7 +3,7 @@ package com.example.restaurantapi.Models.Pass;
 import com.example.restaurantapi.Models.Personal.Personal;
 import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 //class: Pass
@@ -16,7 +16,7 @@ public class Pass {
     private Long passId;
 
     @Column(nullable = false)
-    private LocalDateTime passDateTime;
+    private LocalDate passDateTime;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -33,7 +33,7 @@ public class Pass {
 
     public Pass() {}
 
-    public Pass(Long passId, LocalDateTime passDateTime, PassType passType) {
+    public Pass(Long passId, LocalDate passDateTime, PassType passType) {
         this.passId = passId;
         this.passDateTime = passDateTime;
         this.passType = passType;
@@ -41,9 +41,9 @@ public class Pass {
 
     public Long getPassId() { return passId; }
 
-    public LocalDateTime getPassDateTime() { return passDateTime; }
+    public LocalDate getPassDateTime() { return passDateTime; }
 
-    public void setPassDateTime(LocalDateTime passDateTime) { this.passDateTime = passDateTime; }
+    public void setPassDateTime(LocalDate passDateTime) { this.passDateTime = passDateTime; }
 
     public PassType getPassType() { return passType; }
 
