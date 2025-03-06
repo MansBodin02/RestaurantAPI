@@ -245,25 +245,33 @@ json
 }
 
 📰 News Controller (/api/news)
-Hantera restaurangnyheter. Varje nyhet har en titel, beskrivning och publiceringsdatum.
-
-Metod	Endpoint	                        Beskrivning
-GET	    /api/news/	                        Hämta alla nyheter.
-GET	    /api/news/{newsTitle}/{newsDate}	Hämta en nyhet baserat på titel och datum.
-POST	/api/news/	                        Lägg till en nyhet.
-POST	/api/news/batch	                    Lägg till flera nyheter.
-PUT	    /api/news/{newsTitle}/{newsDate}	Uppdatera en nyhet.
+Metod	Endpoint	Beskrivning
+GET	/api/news/	Hämta alla nyheter.
+GET	/api/news/{newsTitle}/{newsDate}	Hämta en nyhet baserat på titel och datum.
+POST	/api/news/	Lägg till en nyhet med bild.
+POST	/api/news/batch	Lägg till flera nyheter.
+PUT	/api/news/{newsTitle}/{newsDate}	Uppdatera en nyhet.
 DELETE	/api/news/{newsTitle}/{newsDate}	Radera en nyhet.
+🌍 URL:POST http://localhost:8080/api/news/
+🔄 Request Format (multipart/form-data i Postman)
+I Postman, välj fliken Body, välj form-data, och lägg till följande fält:
 
-Exempel på att skapa en news med POST:
-URL: http://localhost:8080/api/news/
-json
-{
-    "newsTitle": "Ny Meny För Säsongen!",
-    "newsInfo": "Vi introducerar vår nya meny för våren, full med läckra rätter och uppfriskande drycker.",
-    "newsDate": "2025-03-01T12:00:00",
-    "newsImage": "https://example.com/images/spring_menu.jpg"
-}
+Key	        Value                 (Exempel)	        Type
+newsTitle	"Ny Meny För Säsongen!"	Text
+newsInfo	"Vi introducerar vår nya meny för våren, full med läckra rätter och uppfriskande drycker."	Text
+newsDate	"2025-03-01" (Format: YYYY-MM-DD)	Text
+image	[Ladda upp en bildfil från din dator]	File
+📌 Exempel på hur det ser ut i Postman:
+Välj POST-metod och ange URL:
+
+http://localhost:8080/api/news/
+Gå till Body → välj form-data.
+
+Lägg till följande nycklar:
+newsTitle → "Ny Meny För Säsongen!" (text)
+newsInfo → "Vi introducerar vår nya meny för våren, full med läckra rätter och uppfriskande drycker." (text)
+newsDate → "2025-03-01" (text)
+image → Välj en bild från din dator (file).
 
 
 
