@@ -27,6 +27,13 @@ public class PersonalController {
         return ResponseEntity.ok(personalRepo.findAll());
     }
 
+    @GetMapping("/{personalName}")
+    public ResponseEntity<Personal> getPersonalByName(@PathVariable String personalName){
+        return personalRepo.findByPersonalName(personalName).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
+
+
     // Hämta en enskild personal baserat på ID
     @GetMapping("/{personalID}")
     public ResponseEntity<Personal> getPersonalById(@PathVariable Long personalID) {
