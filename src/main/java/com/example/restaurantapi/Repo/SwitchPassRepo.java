@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface SwitchPassRepo extends JpaRepository<SwitchPass, Long> {
@@ -18,4 +19,6 @@ public interface SwitchPassRepo extends JpaRepository<SwitchPass, Long> {
 
 
     List<SwitchPass> findByRequesterPersonalIdOrReceiverPersonalId(Long personalId, Long personalId1);
+
+    List<SwitchPass> findByPass(Pass pass);
 }

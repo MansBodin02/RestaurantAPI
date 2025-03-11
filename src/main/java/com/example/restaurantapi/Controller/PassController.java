@@ -12,6 +12,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.swing.text.html.Option;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -203,7 +205,7 @@ public class PassController {
                 return ResponseEntity.ok("Pass switch approved.");
             } else if (status == PassStatus.DECLINED) {
                 // Om passbytet nekas -> Ta bort SwitchPass från databasen
-                switchPassRepo.delete(switchPass);
+                //switchPassRepo.delete(switchPass);
                 return ResponseEntity.ok("Pass switch declined and removed.");
             }
 
@@ -213,14 +215,26 @@ public class PassController {
         }
     }
 
+    @Transactional
     @DeleteMapping("/{passId}")
     public ResponseEntity<String> deletePass(@PathVariable Long passId) {
-        if (passRepo.existsById(passId)) {
-            passRepo.deleteById(passId);
-            return ResponseEntity.ok("Pass deleted");
+        Optional<Pass> optionalPass = passRepo.findById(passId);
+
+        if (optionalPass.isPresent()) {
+            Pass pass = optionalPass.get();
+
+            List<SwitchPass> switchPasses = switchPassRepo.findByPass(pass);
+            if (!switchPasses.isEmpty()) {
+                switchPassRepo.deleteAll(switchPasses);
+            }
+
+            passRepo.delete(pass);
+
+            return ResponseEntity.ok("Pass och associerade SwitchPass-poster har raderats");
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Pass not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Passet kunde inte hittas");
         }
     }
+
 }
 
